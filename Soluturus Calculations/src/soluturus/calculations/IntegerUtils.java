@@ -24,6 +24,14 @@ public final class IntegerUtils {
 		throw new UnsupportedOperationException();
 	}
 
+	public static final BigInteger factorial(final BigInteger number) {
+		// TODO improve
+		BigInteger ttl = ONE;
+		for (BigInteger i = BigInteger.TWO; i.compareTo(number) != 0; i = i.add(ONE))
+			ttl = ttl.multiply(i);
+		return ttl;
+	}
+
 	/**
 	 * Returns the Greatest Common Divisor of the two arguments a and b.
 	 * 
