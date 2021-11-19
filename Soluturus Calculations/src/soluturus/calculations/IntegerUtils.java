@@ -26,10 +26,18 @@ public final class IntegerUtils {
 
 	public static final BigInteger factorial(final BigInteger number) {
 		// TODO improve
-		BigInteger ttl = ONE;
-		for (BigInteger i = BigInteger.TWO; i.compareTo(number) != 0; i = i.add(ONE))
-			ttl = ttl.multiply(i);
-		return ttl;
+		if (number.equals(ZERO) || number.equals(ONE))
+			return ONE;
+		else {
+			BigInteger ttl = ONE;
+			for (BigInteger i = BigInteger.TWO; i.compareTo(number) < 1; i = i.add(ONE))
+				ttl = ttl.multiply(i);
+			return ttl;
+		}
+	}
+
+	public static final BigInteger nCk(final BigInteger n, final BigInteger k) {
+		return factorial(n).divide(factorial(k).multiply(factorial(n.subtract(k))));
 	}
 
 	/**
