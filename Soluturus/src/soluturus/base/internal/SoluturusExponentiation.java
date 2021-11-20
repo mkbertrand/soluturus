@@ -74,6 +74,29 @@ public final class SoluturusExponentiation {
 		return null;
 	}
 
+	public static Expression pow(Power base, Expression exponent) {
+		if (exponent instanceof Integer exponent0)
+			return pow(base, exponent0);
+		else if (exponent instanceof Variable exponent0)
+			return pow(base, exponent0);
+		else if (exponent instanceof Sum exponent0)
+			return pow(base, exponent0);
+		else if (exponent instanceof Product exponent0)
+			return pow(base, exponent0);
+		else if (exponent instanceof Power exponent0)
+			return pow(base, exponent0);
+		return null;
+	}
+
+	private static Expression product_exponent_pow(Expression base, Product exponent) {
+		Expression pow = base;
+
+		for (Expression e : exponent)
+			pow = pow.pow(e);
+
+		return pow;
+	}
+
 	// TODO check for completion
 	public static Expression pow(Integer b, Integer e) {
 		if (b.equals(Expression.zero) && e.signum() < 0)
@@ -95,10 +118,12 @@ public final class SoluturusExponentiation {
 			return new Power(b, e);
 	}
 
+	public static Expression pow(Integer b, Product e) {
+		return product_exponent_pow(b, e);
+	}
+
 	public static Expression pow(Variable b, Integer e) {
-		if (e.signum() < 0)
-			return b.pow(e.negate()).reciprocate();
-		else if (e.equals(Expression.zero))
+		if (e.equals(Expression.zero))
 			return Expression.one;
 		else if (e.equals(Expression.one))
 			return b;
@@ -110,8 +135,17 @@ public final class SoluturusExponentiation {
 		return new Power(b, e);
 	}
 
+	public static Expression pow(Variable b, Product e) {
+		return product_exponent_pow(b, e);
+	}
+
 	public static Expression pow(Sum b, Integer e) {
-		if (b.length() == 2) {
+
+		if (e.signum() == 0)
+			return Expression.one;
+		else if (e.signum() < 0)
+			return b.pow(e.negate()).reciprocate();
+		else if (b.length() == 2) {
 			Expression product = Expression.zero;
 
 			final BigInteger n = e.number();
@@ -122,8 +156,37 @@ public final class SoluturusExponentiation {
 				product = product.add(new Integer(IntegerUtils.nCk(n, k)).multiply(x.pow(new Integer(n.subtract(k))),
 						y.pow(new Integer(k))));
 			return product;
+		} else {
+
+			Expression base = b;
+			BigInteger exponent = e.number();
+			Expression result = Expression.one;
+
+			while (exponent.signum() == 1) {
+				if (exponent.testBit(0))
+					result = result.multiply(base);
+				base = base.multiply(base);
+				exponent = exponent.shiftRight(1);
+			}
+			return result;
+
+			// TODO
 		}
-		// TODO
-		return null;
+	}
+
+	public static Expression pow(Sum b, Product e) {
+		return product_exponent_pow(b, e);
+	}
+
+	public static Expression pow(Product b, Product e) {
+		return product_exponent_pow(b, e);
+	}
+
+	public static Expression pow(Power b, Integer e) {
+		return b.base().pow(b.exponent().multiply(e));
+	}
+	
+	public static Expression pow(Power b, Product e) {
+		return product_exponent_pow(b, e);
 	}
 }
