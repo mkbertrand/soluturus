@@ -45,14 +45,31 @@ final class SoluturusCanAdd {
 	}
 
 	static boolean canAdd(Product a1, Expression a2) {
-		if (a2 instanceof Product)
-			return bareCanAdd(a1, a2);
-		else
+		if (a2 instanceof Product a2p) {
+
+			int removeIndex1 = -1;
+			int removeIndex2 = -1;
+
+			for (int i = 0; i < a1.length(); i++)
+				if (a1.factors()[i] instanceof Integer)
+					removeIndex1 = i;
+
+			for (int i = 0; i < a2p.length(); i++)
+				if (a2p.factors()[i] instanceof Integer)
+					removeIndex2 = i;
+
+			if (removeIndex1 == -1 && removeIndex2 == -1)
+				return false; // TODO
+			else
+				return canAdd(removeIndex1 != -1 ? SoluturusMath.productRemove(a1, removeIndex1) : a1,
+						removeIndex2 != -1 ? SoluturusMath.productRemove(a2p, removeIndex2) : a2);
+		} else
 			// TODO
 			return false;
 	}
 
 	private static boolean bareCanAdd(Expression a1, Expression a2) {
-		return !(a1.add(a2) instanceof Sum);
+		Expression sum = a1.add(a2);
+		return sum != null && !(sum instanceof Sum);
 	}
 }
