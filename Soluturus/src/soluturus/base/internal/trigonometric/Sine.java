@@ -3,8 +3,13 @@ package soluturus.base.internal.trigonometric;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Variable;
 
-public final record Sine(Expression angle) implements Expression {
+public record Sine(Expression angle) implements Expression {
 
+	@Override
+	public Sine clone() {
+		return new Sine(angle);
+	}
+	
 	@Override
 	public Expression add(Expression addend) {
 		// TODO Auto-generated method stub
