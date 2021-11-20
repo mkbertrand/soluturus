@@ -3,11 +3,27 @@ package soluturus.base.internal;
 import soluturus.base.expressions.Expression;
 import soluturus.base.internal.algebraic.Product;
 
-public final class SoluturusMath {
+final class SoluturusMath {
 
 	// Prevents instantiation
 	private SoluturusMath() {
 		throw new Error();
+	}
+
+	static Expression productRemove(Product p, int index) {
+		
+		Expression[] factors = p.factors();
+		
+		if (index >= p.length() || index < 0)
+			throw new IndexOutOfBoundsException();
+		else if (p.length() == 2)
+			return index == 0 ? factors[1] : factors[0];
+		else {
+			Expression[] result = new Expression[factors.length - 1];
+			System.arraycopy(factors, 0, result, 0, index);
+			System.arraycopy(factors, index + 1, result, index, factors.length - index - 1);
+			return new Product(result);
+		}
 	}
 
 	static boolean canMultiply(Expression m1, Expression m2) {
