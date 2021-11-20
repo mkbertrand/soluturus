@@ -28,9 +28,18 @@ public final record Variable(String name) implements Expression {
 		return true;
 	}
 
-	public static Variable of(String name) {
+	public Variable(char name) {
+		this(Character.toString(name));
+	}
+
+	public Variable(String name) {
 		if (!isAcceptableName(name))
 			throw new IllegalArgumentException();
+		this.name = name;
+	}
+
+	@Override
+	public Variable clone() {
 		return new Variable(name);
 	}
 	
@@ -85,16 +94,16 @@ public final record Variable(String name) implements Expression {
 	}
 
 	@Override
-	public Variable[] factor() {
-		return new Variable[] { this };
-	}
-
-	@Override
 	public Expression substitute(Variable v, Expression replacement) {
 		if (equals(v))
 			return replacement;
 		else
 			return this;
+	}
+
+	@Override
+	public Variable[] factor() {
+		return new Variable[] { this };
 	}
 
 	@Override
