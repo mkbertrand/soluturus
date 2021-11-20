@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 public final class PrimeFinder implements Cloneable, Iterable<BigInteger>, Serializable {
 
 	public static final PrimeFinder DEFAULT_FINDER = new PrimeFinder();
-	
+
 	private static final long serialVersionUID = 1307057860368995251L;
 
 	private final class Itr implements Iterator<BigInteger> {
@@ -77,8 +77,21 @@ public final class PrimeFinder implements Cloneable, Iterable<BigInteger>, Seria
 		return primes.get(primes.size() - 1);
 	}
 
+	public boolean isPrime(BigInteger n) {
+		if (n.equals(BigInteger.ONE))
+			return true;
+		else if (n.compareTo(cursor) < 1)
+			return primes.contains(n);
+
+		while (n.compareTo(cursor) > -1)
+			next();
+
+		return primes.get(primes.size() - 2).equals(n);
+	}
+
+	@SuppressWarnings("unchecked")
 	public ArrayList<BigInteger> getPrimes() {
-		return primes;
+		return (ArrayList<BigInteger>) primes.clone();
 	}
 
 	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
