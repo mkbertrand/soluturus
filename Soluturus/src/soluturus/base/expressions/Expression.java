@@ -1,6 +1,7 @@
 package soluturus.base.expressions;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 import soluturus.utils.internal.Simplifier;
 import soluturus.utils.internal.Symbol;
@@ -64,7 +65,7 @@ import soluturus.utils.internal.Symbol;
  * @author Miles K. Bertrand
  *
  */
-public interface Expression extends Serializable, Symbol {
+public interface Expression extends Cloneable, Serializable, Symbol {
 
 	public static final Variable pi = new Variable("π");
 	public static final Variable i = new Variable("i");
@@ -76,40 +77,28 @@ public interface Expression extends Serializable, Symbol {
 	public static final Integer two = Integer.of(2);
 	public static final Integer ten = Integer.of(10);
 
+	public static Integer of(long l) {
+		return Integer.of(l);
+	}
+
+	public static Integer of(BigInteger b) {
+		return Integer.of(b);
+	}
+
+	public static Expression of(char c) {
+		if (Character.isDigit(c))
+			return Integer.of((int) (c - '0'));
+		return new Variable(c);
+	}
+
 	public static Expression of(String s) {
 		return Simplifier.simplify(s);
 	}
-
+	
+	public Expression clone();
+	
 	public Expression add(Expression addend);
 
-	public Expression multiply(Expression multiplicand);
-
-	public Expression sin();
-
-	public default Expression subtract(Expression subtrahend) {
-		return add(subtrahend.negate());
-	}
-
-	public Expression divide(Expression dividend);
-
-	public Expression pow(Expression exponent);
-
-	public Expression log(Expression base);
-
-	public default Expression root(Expression exponent) {
-		return pow(exponent.reciprocate());
-	}
-
-	public default Expression ln() {
-		return log(e);
-	}
-
-	public Expression negate();
-
-	public Expression reciprocate();
-
-	public Expression[] factor();
-	
 	public default Expression add(Expression... addends) {
 
 		Expression sum = this;
@@ -120,17 +109,45 @@ public interface Expression extends Serializable, Symbol {
 		return sum;
 	}
 
+	public default Expression subtract(Expression subtrahend) {
+		return add(subtrahend.negate());
+	}
+
+	public Expression multiply(Expression multiplicand);
+
 	public default Expression multiply(Expression... multiplicands) {
 
 		Expression product = this;
 
 		for (Expression e : multiplicands)
 			product = product.multiply(e);
-		
+
 		return product;
 	}
 
+	public Expression divide(Expression dividend);
+
+	public Expression pow(Expression exponent);
+
+	public default Expression root(Expression exponent) {
+		return pow(exponent.reciprocate());
+	}
+
+	public Expression log(Expression base);
+
+	public default Expression ln() {
+		return log(e);
+	}
+
+	public Expression negate();
+
+	public Expression reciprocate();
+
+	public Expression sin();
+
 	public Expression substitute(Variable v, Expression replacement);
-	
+
+	public Expression[] factor();
+
 	public boolean isKnown();
 }
