@@ -39,6 +39,11 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 		this(factors.toArray(new Expression[factors.size()]));
 	}
 
+	@Override
+	public Iterator<Expression> iterator() {
+		return Arrays.asList(factors).iterator();
+	}
+
 	public Expression[] factors() {
 		return factors.clone();
 	}
@@ -46,18 +51,25 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 	public int length() {
 		return factors.length;
 	}
+	
+	@Override
+	public Product clone() {
+		return new Product(factors());
+	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Product other))
 			return false;
+		else if (length() != other.length())
+			return false;
 
-		ArrayList<Expression> thesefactors = new ArrayList<>(Arrays.asList(factors));
-		List<Expression> thosefactors = Arrays.asList(other.factors);
+		ArrayList<Expression> factors1 = new ArrayList<>(Arrays.asList(factors));
+		List<Expression> factors2 = Arrays.asList(other.factors);
 
-		thesefactors.removeIf(thosefactors::contains);
+		factors1.removeIf(factors2::contains);
 
-		return thesefactors.size() == 0;
+		return factors1.size() == 0;
 	}
 
 	@Override
@@ -169,10 +181,5 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 			sb.append("*" + factors[i].toString());
 
 		return sb.toString();
-	}
-
-	@Override
-	public Iterator<Expression> iterator() {
-		return Arrays.asList(factors).iterator();
 	}
 }
