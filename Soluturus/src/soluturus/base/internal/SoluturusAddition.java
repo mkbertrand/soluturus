@@ -204,6 +204,8 @@ public final class SoluturusAddition {
 
 	public static Expression add(Product a1, Product a2) {
 
+		//TODO will need future factoring support
+		
 		ArrayList<Expression> factors1 = new ArrayList<>(Arrays.asList(a1.factors()));
 		ArrayList<Expression> factors2 = new ArrayList<>(Arrays.asList(a2.factors()));
 
@@ -213,7 +215,7 @@ public final class SoluturusAddition {
 			if (factors2.contains(factors1.get(i))) {
 				factors2.remove(factors1.get(i));
 				commonFactors.add(factors1.get(i));
-				factors1.remove(i);
+				factors1.remove(i--);
 			}
 
 		// a*c + b*c = c * (a+b)
@@ -235,7 +237,7 @@ public final class SoluturusAddition {
 		case 1 -> commonFactors.get(0);
 		default -> new Product(commonFactors);
 		};
-
+		
 		if (SoluturusCanAdd.canAdd(a, b))
 			return c.multiply(a.add(b));
 		else
@@ -252,7 +254,10 @@ public final class SoluturusAddition {
 
 	public static Expression add(Power a1, Power a2) {
 
+		if (a1.base() instanceof Integer && a2.base() instanceof Integer
+				&& a1.exponent().equals(Expression.negative_one) && a2.exponent().equals(Expression.negative_one))
+			return a1.base().add(a2.base()).divide(a1.base().multiply(a2.base()));
 		// TODO
-		return null;
+		return new Sum(a1, a2);
 	}
 }
