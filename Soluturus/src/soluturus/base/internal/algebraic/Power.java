@@ -4,6 +4,7 @@ import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
 import soluturus.base.internal.SoluturusAddition;
+import soluturus.base.internal.SoluturusExponentiation;
 import soluturus.base.internal.SoluturusMultiplication;
 
 /**
@@ -16,6 +17,11 @@ import soluturus.base.internal.SoluturusMultiplication;
  */
 public final record Power(Expression base, Expression exponent) implements Expression {
 
+	@Override
+	public Power clone() {
+		return new Power(base, exponent);
+	}
+	
 	@Override
 	public Expression add(Expression addend) {
 
@@ -52,8 +58,7 @@ public final record Power(Expression base, Expression exponent) implements Expre
 
 	@Override
 	public Expression pow(Expression exponent) {
-		// TODO Auto-generated method stub
-		return null;
+		return SoluturusExponentiation.pow(this, exponent);
 	}
 
 	@Override
