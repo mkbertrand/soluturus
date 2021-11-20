@@ -122,28 +122,31 @@ public final class Simplifier {
 			if (exprlist.get(i) == Operator.MULTIPLY) {
 				exprlist.set(i - 1, ((Expression) exprlist.get(i - 1)).multiply((Expression) exprlist.get(i + 1)));
 				exprlist.remove(i + 1);
-				exprlist.remove(i);
+				exprlist.remove(i--);
 			} else if (exprlist.get(i) == Operator.DIVIDE) {
 				exprlist.set(i - 1, ((Expression) exprlist.get(i - 1)).divide((Expression) exprlist.get(i + 1)));
 				exprlist.remove(i + 1);
-				exprlist.remove(i);
+				exprlist.remove(i--);
 			}
 
 		for (int i = 1; i < exprlist.size() - 1; i++)
 			if (exprlist.get(i) == Operator.ADD) {
 				exprlist.set(i - 1, ((Expression) exprlist.get(i - 1)).add((Expression) exprlist.get(i + 1)));
 				exprlist.remove(i + 1);
-				exprlist.remove(i);
+				exprlist.remove(i--);
 			} else if (exprlist.get(i) == Operator.SUBTRACT) {
 				exprlist.set(i - 1, ((Expression) exprlist.get(i - 1)).subtract((Expression) exprlist.get(i + 1)));
 				exprlist.remove(i + 1);
-				exprlist.remove(i);
+				exprlist.remove(i--);
 			}
 
 		// If all goes well, the result should have a size() of one. If not, the user
 		// passed a bad expression.
-		if (exprlist.size() != 1)
-			throw new IllegalArgumentException();
+		if (exprlist.size() != 1) {
+			System.out.println(Arrays.toString(expression));
+			System.out.println(exprlist);
+
+			throw new IllegalArgumentException();}
 
 		return (Expression) exprlist.get(0);
 	}
@@ -310,8 +313,10 @@ public final class Simplifier {
 
 		for (int i = 0; i < expression.size() - 1; i++)
 			if (expression.get(i)instanceof Expression exi && expression.get(i + 1)instanceof Expression exi1
-					&& (i == expression.size() - 1 || expression.get(i + 2) instanceof Expression))
+					&& (expression.size() - i < 3 || expression.get(i + 2) instanceof Expression)) {
 				expression.set(i, exi.multiply(exi1));
+				expression.remove(i-- + 1);
+			}
 
 		expression.forEach(o -> {
 			if (!(o instanceof Symbol))
