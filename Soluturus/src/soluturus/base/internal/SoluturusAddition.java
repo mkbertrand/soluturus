@@ -204,8 +204,8 @@ public final class SoluturusAddition {
 
 	public static Expression add(Product a1, Product a2) {
 
-		//TODO will need future factoring support
-		
+		// TODO will need future factoring support
+
 		ArrayList<Expression> factors1 = new ArrayList<>(Arrays.asList(a1.factors()));
 		ArrayList<Expression> factors2 = new ArrayList<>(Arrays.asList(a2.factors()));
 
@@ -237,7 +237,7 @@ public final class SoluturusAddition {
 		case 1 -> commonFactors.get(0);
 		default -> new Product(commonFactors);
 		};
-		
+
 		if (SoluturusCanAdd.canAdd(a, b))
 			return c.multiply(a.add(b));
 		else
