@@ -87,15 +87,8 @@ public final class SoluturusMultiplication {
 			if (SoluturusMath.canMultiply(factors[i], m2)) {
 
 				Expression prod = factors[i].multiply(m2);
-
-				if (factors.length == 2)
-					return i == 0 ? factors[1].multiply(prod) : factors[0].multiply(prod);
-				else {
-					Expression[] result = new Expression[factors.length - 1];
-					System.arraycopy(factors, 0, result, 0, i);
-					System.arraycopy(factors, i + 1, result, i, factors.length - i - 1);
-					return new Product(result).multiply(prod);
-				}
+				// TODO is this right?
+				return SoluturusMath.productRemove(m1, i).multiply(prod);
 			}
 
 		Expression[] result = new Expression[factors.length + 1];
