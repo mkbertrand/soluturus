@@ -1,7 +1,9 @@
 package soluturus.base.internal.algebraic;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import soluturus.base.ExpressionContainmentException;
 import soluturus.base.expressions.Expression;
@@ -29,16 +31,45 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 
 		for (Expression e : addends)
 			if (e instanceof Sum || e == null)
-				throw new ExpressionContainmentException();
+				throw new ExpressionContainmentException(e.toString());
 		this.addends = addends;
+	}
+
+	public Sum(List<Expression> addends) {
+		this(addends.toArray(new Expression[addends.size()]));
 	}
 
 	public final Expression[] addends() {
 		return addends.clone();
 	}
 
+	@Override
+	public Iterator<Expression> iterator() {
+		return Arrays.asList(addends).iterator();
+	}
+
 	public final int length() {
 		return addends.length;
+	}
+
+	@Override
+	public Sum clone() {
+		return new Sum(addends());
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Sum other))
+			return false;
+		else if (length() != other.length())
+			return false;
+
+		ArrayList<Expression> addends1 = new ArrayList<>(Arrays.asList(addends));
+		List<Expression> addends2 = Arrays.asList(other.addends);
+
+		addends1.removeIf(addends2::contains);
+
+		return addends1.size() == 0;
 	}
 
 	@Override
@@ -127,12 +158,6 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 		String end;
 		for (int i = 1; i < addends.length; i++)
 			sb.append((end = addends[i].toString()).charAt(0) == '-' ? end : "+" + end);
-
 		return sb.toString();
-	}
-	
-	@Override
-	public Iterator<Expression> iterator() {
-		return Arrays.asList(addends).iterator();
 	}
 }
