@@ -20,10 +20,6 @@ import soluturus.calculations.IntegerUtils;
  */
 public final record Integer(BigInteger number) implements Expression, Comparable<Integer> {
 
-	public Integer(long number) {
-		this(BigInteger.valueOf(number));
-	}
-
 	public static Integer of(int number) {
 		return new Integer(number);
 	}
@@ -36,14 +32,28 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 		return new Integer(number);
 	}
 
+	public Integer(long number) {
+		this(BigInteger.valueOf(number));
+	}
+
 	public int signum() {
 		return number.signum();
+	}
+
+	@Override
+	public int compareTo(Integer o) {
+		return number.compareTo(o.number);
 	}
 
 	public Integer abs() {
 		return new Integer(number.abs());
 	}
 
+	@Override
+	public Integer clone() {
+		return new Integer(number);
+	}
+	
 	@Override
 	public Expression add(Expression addend) {
 		return SoluturusAddition.add(this, addend);
@@ -93,6 +103,11 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	}
 
 	@Override
+	public Integer substitute(Variable v, Expression replacement) {
+		return this;
+	}
+
+	@Override
 	public Integer[] factor() {
 
 		BigInteger[] bfactors = IntegerUtils.factor(number);
@@ -105,11 +120,6 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	}
 
 	@Override
-	public Integer substitute(Variable v, Expression replacement) {
-		return this;
-	}
-	
-	@Override
 	public boolean isKnown() {
 		return true;
 	}
@@ -117,10 +127,5 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	@Override
 	public String toString() {
 		return number.toString();
-	}
-
-	@Override
-	public int compareTo(Integer o) {
-		return number.compareTo(o.number);
 	}
 }
