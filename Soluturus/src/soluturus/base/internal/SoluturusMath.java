@@ -1,6 +1,7 @@
 package soluturus.base.internal;
 
 import soluturus.base.expressions.Expression;
+import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 
 final class SoluturusMath {
@@ -11,9 +12,9 @@ final class SoluturusMath {
 	}
 
 	static Expression productRemove(Product p, int index) {
-		
+
 		Expression[] factors = p.factors();
-		
+
 		if (index >= p.length() || index < 0)
 			throw new IndexOutOfBoundsException();
 		else if (p.length() == 2)
@@ -32,6 +33,14 @@ final class SoluturusMath {
 			return true;
 		else
 			return !(m1.multiply(m2) instanceof Product);
+	}
+
+	static boolean canPow(Expression base, Expression exponent) {
+		if (base instanceof Power bpow)
+			// TODO
+			return canPow(bpow.base(), exponent);
+		else
+			return !(base.pow(exponent) instanceof Power);
 	}
 
 	static boolean canDivide(Expression dividend, Expression divisor) {
