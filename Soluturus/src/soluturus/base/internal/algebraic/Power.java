@@ -21,7 +21,7 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	public Power clone() {
 		return new Power(base, exponent);
 	}
-	
+
 	@Override
 	public Expression add(Expression addend) {
 
@@ -69,8 +69,11 @@ public final record Power(Expression base, Expression exponent) implements Expre
 
 	@Override
 	public Expression negate() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO
+		if (exponent.equals(negative_one))
+			return base.negate().reciprocate();
+		else
+			return new Product(negative_one, this);
 	}
 
 	@Override
