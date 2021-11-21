@@ -30,7 +30,7 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 			throw new ExpressionContainmentException();
 
 		for (Expression e : addends)
-			if (e instanceof Sum || e == null)
+			if (e instanceof Sum || e == null || e.equals(zero))
 				throw new ExpressionContainmentException(e.toString());
 		this.addends = addends;
 	}
