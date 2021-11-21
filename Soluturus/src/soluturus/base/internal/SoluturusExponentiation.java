@@ -1,6 +1,8 @@
 package soluturus.base.internal;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import soluturus.base.ZeroDivisionException;
 import soluturus.base.expressions.Expression;
@@ -89,12 +91,23 @@ public final class SoluturusExponentiation {
 	}
 
 	private static Expression product_exponent_pow(Expression base, Product exponent) {
-		Expression pow = base;
 
-		for (Expression e : exponent)
-			pow = pow.pow(e);
+		ArrayList<Expression> finexp = new ArrayList<>(Arrays.asList(exponent.factors()));
+		for (int i = 0; i < finexp.size(); i++)
+			if (SoluturusMath.canPow(base, finexp.get(i)))
+				base = base.pow(finexp.remove(i--));
 
-		return pow;
+		if (finexp.size() == 0)
+			return base;
+		else if (finexp.size() == 1)
+			return new Power(base, finexp.get(0));
+		else {
+			// TODO
+			for (int i = 0; i < finexp.size(); i++)
+				finexp.set(i, new Power(base, finexp.get(i)));
+
+			return new Product(finexp);
+		}
 	}
 
 	// TODO check for completion
@@ -137,6 +150,11 @@ public final class SoluturusExponentiation {
 
 	public static Expression pow(Variable b, Product e) {
 		return product_exponent_pow(b, e);
+	}
+
+	public static Expression pow(Variable b, Power e) {
+		// TODO
+		return new Power(b, e);
 	}
 
 	public static Expression pow(Sum b, Integer e) {
@@ -185,8 +203,12 @@ public final class SoluturusExponentiation {
 	public static Expression pow(Power b, Integer e) {
 		return b.base().pow(b.exponent().multiply(e));
 	}
-	
+
 	public static Expression pow(Power b, Product e) {
 		return product_exponent_pow(b, e);
+	}
+
+	public static Expression pow(Power b, Power e) {
+		return b.base().pow(b.exponent().multiply(e));
 	}
 }
