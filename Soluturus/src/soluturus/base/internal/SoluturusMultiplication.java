@@ -244,6 +244,8 @@ public final class SoluturusMultiplication {
 		// TODO
 		if (m1.exponent().equals(m2.exponent()) && SoluturusMath.canMultiply(m1.base(), m2.base()))
 			return m1.base().multiply(m2.base()).pow(m1.exponent());
+		else if (m1.base().equals(m2.base()) && SoluturusCanAdd.canAdd(m1.exponent(), m2.exponent()))
+			return m1.base().pow(m1.exponent().add(m2.exponent()));
 		return new Product(m1, m2);
 	}
 }
