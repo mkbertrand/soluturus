@@ -132,7 +132,10 @@ public final class SoluturusAddition {
 	}
 
 	public static Expression add(Integer a1, Variable a2) {
-		return new Sum(a1, a2);
+		if (a1.equals(Expression.zero))
+			return a2;
+		else
+			return new Sum(a1, a2);
 	}
 
 	public static Expression add(Integer a1, Sum a2) {
@@ -157,6 +160,8 @@ public final class SoluturusAddition {
 		if (a2.base() instanceof Integer && a2.exponent().equals(Expression.negative_one))
 			// a+b^-1 = (a*b+1) / b, and a*b+1 cannot be divisible by b when b != 1
 			return new Product(a1.multiply(a2.base()).add(Expression.one), a2);
+		else if (a1.equals(Expression.zero))
+			return a2;
 		else
 			// TODO check whether any other situations could result in non-sum
 			return new Sum(a1, a2);
