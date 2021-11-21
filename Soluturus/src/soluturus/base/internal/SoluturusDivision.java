@@ -90,33 +90,43 @@ public final class SoluturusDivision {
 			throw new ZeroDivisionException();
 		else if (dividend.equals(Expression.zero))
 			return Expression.zero;
-		boolean isNegative = false;
 
-		if (dividend.number().signum() == -1 && divisor.number().signum() == -1) {
-			dividend = dividend.negate();
-			divisor = divisor.negate();
-		} else if (isNegative = dividend.number().signum() == -1)
-			dividend = dividend.negate();
-		else if (isNegative = divisor.number().signum() == -1)
-			divisor = divisor.negate();
+		boolean isNegative = dividend.number().signum() < 0 ^ divisor.number().signum() < 0;
+
+		dividend = dividend.abs();
+		divisor = divisor.abs();
 
 		BigInteger gcd = IntegerUtils.gcd(dividend.number(), divisor.number());
 
+		dividend = new Integer(dividend.number().divide(gcd));
+		divisor = new Integer(divisor.number().divide(gcd));
+
+		if (divisor.equals(Expression.one))
+			return isNegative ? dividend.negate() : dividend;
+
 		if (dividend.equals(Expression.one))
 			return (isNegative ? divisor.negate() : divisor).reciprocate();
-		else if (gcd.equals(divisor.number()))
-			return new Integer((isNegative ? dividend.negate() : dividend).number().divide(gcd));
 		else
 			return new Product(new Integer((isNegative ? dividend.negate() : dividend).number().divide(gcd)),
 					new Integer(divisor.number().divide(gcd)).reciprocate());
 	}
 
 	public static Expression divide(Integer dividend, Variable divisor) {
-
 		if (dividend.equals(Expression.zero))
 			return Expression.zero;
 		else if (dividend.equals(Expression.one))
 			return divisor.reciprocate();
+		else
+			return new Product(dividend, divisor.reciprocate());
+	}
+
+	public static Expression divide(Variable dividend, Integer divisor) {
+		if (divisor.equals(Expression.zero))
+			throw new ZeroDivisionException();
+		else if (divisor.equals(Expression.one))
+			return dividend;
+		else if (divisor.equals(Expression.negative_one))
+			return dividend.negate();
 		else
 			return new Product(dividend, divisor.reciprocate());
 	}
