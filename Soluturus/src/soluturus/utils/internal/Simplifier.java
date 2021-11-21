@@ -146,7 +146,8 @@ public final class Simplifier {
 			System.out.println(Arrays.toString(expression));
 			System.out.println(exprlist);
 
-			throw new IllegalArgumentException();}
+			throw new IllegalArgumentException();
+		}
 
 		return (Expression) exprlist.get(0);
 	}
@@ -322,6 +323,13 @@ public final class Simplifier {
 			if (!(o instanceof Symbol))
 				throw new IllegalArgumentException();
 		});
+
+		for (int i = 0; i < expression.size(); i++)
+			if (expression.get(i) == Operator.SUBTRACT && (i == 0 || expression.get(i - 1) instanceof Operator)
+					&& expression.get(i + 1)instanceof Expression exp) {
+				expression.set(i, exp.negate());
+				expression.remove(i + 1);
+			}
 
 		return expression.toArray(new Symbol[expression.size()]);
 	}
