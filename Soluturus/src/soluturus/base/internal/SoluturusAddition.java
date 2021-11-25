@@ -139,29 +139,33 @@ public final class SoluturusAddition {
 	}
 
 	public static Expression add(Integer a1, Sum a2) {
-		return sum_add(a2, a1);
+		if (a1.equals(Expression.zero))
+			return a2;
+		else
+			return sum_add(a2, a1);
 	}
 
 	public static Expression add(Integer a1, Product a2) {
-		// TODO check first two if statements and possibly implement generalized formula
+		// TODO
 		Expression[] a2comp = a2.factors();
 
-		if (a2comp[0]instanceof Power a2comp0 && a2comp0.exponent().equals(Expression.negative_one)
-				&& a2comp0.base() instanceof Integer && a2comp[1] instanceof Integer)
-			return a2comp0.base().multiply(a1).add(a2comp[1]).divide(a2comp[0]);
-		else if (a2comp[1]instanceof Power a2comp1 && a2comp1.exponent().equals(Expression.negative_one)
-				&& a2comp1.base() instanceof Integer && a2comp[0] instanceof Integer)
-			return a2comp1.base().multiply(a1).add(a2comp[0]).divide(a2comp[1]);
+		if (a1.equals(Expression.zero))
+			return a2;
+		else if (a2.isFraction())
+			if (a2comp[0]instanceof Integer a20)
+				return ((Power) a2comp[1]).base().multiply(a1).add(a20).divide(((Power) a2comp[1]).base());
+			else
+				return ((Power) a2comp[0]).base().multiply(a1).add(a2comp[1]).divide(((Power) a2comp[0]).base());
 		else
 			return new Sum(a1, a2);
 	}
 
 	public static Expression add(Integer a1, Power a2) {
-		if (a2.base() instanceof Integer && a2.exponent().equals(Expression.negative_one))
+		if (a1.equals(Expression.zero))
+			return a2;
+		else if (a2.isFraction())
 			// a+b^-1 = (a*b+1) / b, and a*b+1 cannot be divisible by b when b != 1
 			return new Product(a1.multiply(a2.base()).add(Expression.one), a2);
-		else if (a1.equals(Expression.zero))
-			return a2;
 		else
 			// TODO check whether any other situations could result in non-sum
 			return new Sum(a1, a2);
@@ -258,9 +262,7 @@ public final class SoluturusAddition {
 	 */
 
 	public static Expression add(Power a1, Power a2) {
-
-		if (a1.base() instanceof Integer && a2.base() instanceof Integer
-				&& a1.exponent().equals(Expression.negative_one) && a2.exponent().equals(Expression.negative_one))
+		if (a1.isFraction() && a2.isFraction())
 			return a1.base().add(a2.base()).divide(a1.base().multiply(a2.base()));
 		// TODO
 		return new Sum(a1, a2);
