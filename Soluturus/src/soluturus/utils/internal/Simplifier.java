@@ -29,7 +29,7 @@ public final class Simplifier {
 	static final Predicate<Character> NUMBER_CHARACTER = c -> Character.getType(c) == Character.DECIMAL_DIGIT_NUMBER
 			|| c == '-' || c == '.';
 
-	private static final Object LOCK = new Object();
+	private static final Object lock = new Object();
 
 	static {
 
@@ -312,12 +312,12 @@ public final class Simplifier {
 			} catch (ClassCastException c) {
 			}
 
+		// If there is a number and a variable next to each other, insert a
+		// multiplication sign
+		// EG 4x -> 4*x
 		for (int i = 0; i < expression.size() - 1; i++)
-			if (expression.get(i)instanceof Expression exi && expression.get(i + 1)instanceof Expression exi1
-					&& (expression.size() - i < 3 || expression.get(i + 2) instanceof Expression)) {
-				expression.set(i, exi.multiply(exi1));
-				expression.remove(i-- + 1);
-			}
+			if (expression.get(i)instanceof Expression exi && expression.get(i + 1)instanceof Expression exi1)
+				expression.add(i + 1, Operator.MULTIPLY);
 
 		expression.forEach(o -> {
 			if (!(o instanceof Symbol))
@@ -358,7 +358,7 @@ public final class Simplifier {
 		if (SHORTCUTS.containsKey(call))
 			return false;
 		else {
-			synchronized (LOCK) {
+			synchronized (lock) {
 				SHORTCUTS.put(call, action);
 			}
 			return true;
