@@ -14,14 +14,18 @@ final class SoluturusCanAdd {
 	}
 
 	static boolean canAdd(Expression a1, Expression a2) {
-		if (a1.equals(a2))
+		if (a1 instanceof Sum || a2 instanceof Sum)
+			return false;
+		else if (a1.equals(a2))
 			return true;
 		else if (a1 instanceof Integer a1i)
 			return canAdd(a1i, a2);
 		else if (a2 instanceof Integer a2i)
 			return canAdd(a2i, a1);
-		else if (a1 instanceof Sum || a2 instanceof Sum)
-			return false;
+		else if (a1 instanceof Variable a1v)
+			return canAdd(a1v, a2);
+		else if (a2 instanceof Variable a2v)
+			return canAdd(a2v, a1);
 		else if (a1 instanceof Product a1p)
 			return canAdd(a1p, a2);
 		else if (a2 instanceof Product a2p)
@@ -44,25 +48,27 @@ final class SoluturusCanAdd {
 			return false;
 	}
 
+	static boolean canAdd(Variable a1, Expression a2) {
+		if (a2 instanceof Variable a2v)
+			return a1.equals(a2v);
+		else
+			return bareCanAdd(a1, a2); // TODO
+	}
+
 	static boolean canAdd(Product a1, Expression a2) {
+		Expression opa1 = SoluturusMath.removeConstant(a1);
+
+		if (!a1.equals(opa1))
+			return canAdd(opa1, a2);
+
 		if (a2 instanceof Product a2p) {
 
-			int removeIndex1 = -1;
-			int removeIndex2 = -1;
+			Expression opa2 = SoluturusMath.removeConstant(a2p);
 
-			for (int i = 0; i < a1.length(); i++)
-				if (a1.factors()[i] instanceof Integer)
-					removeIndex1 = i;
-
-			for (int i = 0; i < a2p.length(); i++)
-				if (a2p.factors()[i] instanceof Integer)
-					removeIndex2 = i;
-
-			if (removeIndex1 == -1 && removeIndex2 == -1)
+			if (a2.equals(opa2))
 				return false; // TODO
 			else
-				return canAdd(removeIndex1 != -1 ? SoluturusMath.productRemove(a1, removeIndex1) : a1,
-						removeIndex2 != -1 ? SoluturusMath.productRemove(a2p, removeIndex2) : a2);
+				return canAdd(a1, opa2);
 		} else
 			// TODO
 			return false;
