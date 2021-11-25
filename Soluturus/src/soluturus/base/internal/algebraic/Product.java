@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import soluturus.base.ExpressionContainmentException;
+import soluturus.base.exceptions.ExpressionContainmentException;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
@@ -51,7 +51,15 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 	public int length() {
 		return factors.length;
 	}
-	
+
+	// Returns whether this is a fraction
+	public boolean isFraction() {
+		if (factors.length != 2)
+			return false;
+		else return factors[0] instanceof Integer && factors[1]instanceof Power fac1 && fac1.isFraction()
+				|| factors[1] instanceof Integer && factors[0]instanceof Power fac0 && fac0.isFraction();
+	}
+
 	@Override
 	public Product clone() {
 		return new Product(factors());
