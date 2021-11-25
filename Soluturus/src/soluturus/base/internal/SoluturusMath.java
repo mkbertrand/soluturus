@@ -1,6 +1,7 @@
 package soluturus.base.internal;
 
 import soluturus.base.expressions.Expression;
+import soluturus.base.expressions.Integer;
 import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 
@@ -27,6 +28,17 @@ final class SoluturusMath {
 		}
 	}
 
+	static Expression removeConstant(Product prod) {
+		int removeIndex = -1;
+		for (int i = 0; i < prod.length(); i++)
+			if (prod.factors()[i] instanceof Integer)
+				removeIndex = i;
+		if (removeIndex == -1)
+			return prod;
+		else
+			return SoluturusMath.productRemove(prod, removeIndex);
+	}
+	
 	static boolean canMultiply(Expression m1, Expression m2) {
 		if (m1.equals(Expression.zero) || m2.equals(Expression.zero) || m1.equals(Expression.one)
 				|| m2.equals(Expression.one))
