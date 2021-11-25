@@ -17,6 +17,11 @@ import soluturus.base.internal.SoluturusMultiplication;
  */
 public final record Power(Expression base, Expression exponent) implements Expression {
 
+	// Returns whether this Power represents a fraction with a numerator of one.
+	public boolean isFraction() {
+		return base instanceof Integer && exponent.equals(negative_one);
+	}
+
 	@Override
 	public Power clone() {
 		return new Power(base, exponent);
