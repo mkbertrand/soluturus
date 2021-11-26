@@ -56,8 +56,9 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 	public boolean isFraction() {
 		if (factors.length != 2)
 			return false;
-		else return factors[0] instanceof Integer && factors[1]instanceof Power fac1 && fac1.isFraction()
-				|| factors[1] instanceof Integer && factors[0]instanceof Power fac0 && fac0.isFraction();
+		else
+			return factors[0] instanceof Integer && factors[1]instanceof Power fac1 && fac1.isFraction()
+					|| factors[1] instanceof Integer && factors[0]instanceof Power fac0 && fac0.isFraction();
 	}
 
 	@Override
@@ -123,7 +124,19 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 
 	@Override
 	public Expression negate() {
-		// TODO Auto-generated method stub
+		for (int i = 0; i < factors.length; i++)
+			if (factors[i] instanceof Integer) {
+				Expression[] negativeFactors = factors();
+				negativeFactors[i] = negativeFactors[i].negate();
+				return new Product(negativeFactors);
+			}
+
+		for (int i = 0; i < factors.length; i++)
+			if (factors[i]instanceof Power facpow && facpow.base() == negative_one) {
+				Expression[] negativeFactors = factors();
+				negativeFactors[i] = negativeFactors[i].negate();
+				return new Product(negativeFactors);
+			}
 		return null;
 	}
 
