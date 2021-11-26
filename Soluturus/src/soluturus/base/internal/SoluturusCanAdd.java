@@ -22,14 +22,14 @@ final class SoluturusCanAdd {
 			return canAdd(a1i, a2);
 		else if (a2 instanceof Integer a2i)
 			return canAdd(a2i, a1);
-		else if (a1 instanceof Variable a1v)
-			return canAdd(a1v, a2);
-		else if (a2 instanceof Variable a2v)
-			return canAdd(a2v, a1);
 		else if (a1 instanceof Product a1p)
 			return canAdd(a1p, a2);
 		else if (a2 instanceof Product a2p)
 			return canAdd(a2p, a1);
+		else if (a1 instanceof Variable a1v)
+			return canAdd(a1v, a2);
+		else if (a2 instanceof Variable a2v)
+			return canAdd(a2v, a1);
 		return bareCanAdd(a1, a2);
 	}
 
