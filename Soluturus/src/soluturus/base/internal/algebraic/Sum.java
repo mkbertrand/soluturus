@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import soluturus.base.ExpressionContainmentException;
+import soluturus.base.exceptions.ExpressionContainmentException;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
