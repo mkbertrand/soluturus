@@ -2,7 +2,7 @@ package soluturus.base.internal;
 
 import java.math.BigInteger;
 
-import soluturus.base.ZeroDivisionException;
+import soluturus.base.exceptions.ZeroDivisionException;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
