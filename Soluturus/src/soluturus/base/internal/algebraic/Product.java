@@ -132,12 +132,16 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 			}
 
 		for (int i = 0; i < factors.length; i++)
-			if (factors[i]instanceof Power facpow && facpow.base() == negative_one) {
+			if (factors[i]instanceof Power facpow && facpow.exponent() == negative_one) {
 				Expression[] negativeFactors = factors();
 				negativeFactors[i] = negativeFactors[i].negate();
 				return new Product(negativeFactors);
 			}
-		return null;
+		// TODO
+		Expression[] newFactors = new Expression[factors.length + 1];
+		System.arraycopy(factors, 0, newFactors, 0, factors.length);
+		newFactors[factors.length] = negative_one;
+		return new Product(newFactors);
 	}
 
 	@Override
