@@ -40,7 +40,7 @@ final class SoluturusCanAdd {
 			return true;
 		else if (a2 instanceof Variable)
 			return false;
-		else if (a2 instanceof Power a2pow && a2pow.base() instanceof Integer && a2pow.exponent() instanceof Integer)
+		else if (a2 instanceof Power a2pow && a2pow.isFraction())
 			return true;
 		else if (!a2.isKnown())
 			return false;
