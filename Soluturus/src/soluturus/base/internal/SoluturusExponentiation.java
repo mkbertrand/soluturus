@@ -191,7 +191,7 @@ public final class SoluturusExponentiation {
 			else
 				return new Power(base, exponent.reciprocate());
 		} else
-			return null;
+			return new Power(b, e);
 	}
 
 	public static Expression pow(Variable b, Integer e) {
