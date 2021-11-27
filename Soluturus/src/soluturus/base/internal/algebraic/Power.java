@@ -115,6 +115,9 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	@Override
 	public String toString() {
 		// TODO
-		return base + "^" + exponent;
+		if (isFraction())
+			return ((Integer) base).signum() < 0 ? "-1/" + base.negate() : "1/" + base;
+		else
+			return base + "^" + exponent;
 	}
 }
