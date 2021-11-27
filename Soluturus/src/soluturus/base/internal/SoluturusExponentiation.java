@@ -103,10 +103,7 @@ public final class SoluturusExponentiation {
 			return new Power(base, finexp.get(0));
 		else {
 			// TODO
-			for (int i = 0; i < finexp.size(); i++)
-				finexp.set(i, new Power(base, finexp.get(i)));
-
-			return new Product(finexp);
+			return new Power(base, new Product(finexp));
 		}
 	}
 
@@ -164,6 +161,7 @@ public final class SoluturusExponentiation {
 		else if (e.signum() < 0)
 			return b.pow(e.negate()).reciprocate();
 		else if (b.length() == 2) {
+
 			Expression product = Expression.zero;
 
 			final BigInteger n = e.number();
@@ -173,9 +171,9 @@ public final class SoluturusExponentiation {
 			for (BigInteger k = BigInteger.ZERO; k.compareTo(n) < 1; k = k.add(BigInteger.ONE))
 				product = product.add(new Integer(IntegerUtils.nCk(n, k)).multiply(x.pow(new Integer(n.subtract(k))),
 						y.pow(new Integer(k))));
+
 			return product;
 		} else {
-
 			Expression base = b;
 			BigInteger exponent = e.number();
 			Expression result = Expression.one;
