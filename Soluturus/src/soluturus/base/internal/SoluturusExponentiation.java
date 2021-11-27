@@ -1,6 +1,8 @@
 package soluturus.base.internal;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -130,6 +132,66 @@ public final class SoluturusExponentiation {
 
 	public static Expression pow(Integer b, Product e) {
 		return product_exponent_pow(b, e);
+	}
+
+	public static Expression pow(Integer b, Power e) {
+		if (b.equals(Expression.zero))
+			if (e.base()instanceof Integer ebint && ebint.signum() < 0)
+				throw new ZeroDivisionException();
+			else
+				return Expression.zero;
+		else if (b.equals(Expression.one))
+			return Expression.one;
+		else if (e.isFraction()) {
+
+			Integer deg = (Integer) e.base();
+
+			// Stores whether the radicand is negative while it is being operated on by
+			// methods that require positive numbers.
+			boolean negative = false;
+			if (b.signum() < 0) {
+				negative = true;
+				b = b.abs();
+			}
+
+			// Stores whether the base of the exponent is negative.
+			boolean recip = false;
+			if (((Integer) e.base()).signum() < 0) {
+				recip = true;
+				deg = deg.abs();
+			}
+
+			BigInteger remainingDegree = BigInteger.ONE;
+
+			BigInteger ret = b.number();
+
+			for (BigInteger degree : IntegerUtils.factor(deg.number())) {
+
+				BigDecimal radicand = new BigDecimal(ret);
+
+				MathContext mc = new MathContext(
+						-ExponentiationUtils.root(radicand, degree, new MathContext(1)).scale() + 3);
+
+				BigDecimal root = ExponentiationUtils.root(radicand, degree, mc);
+
+				if (root.toString().indexOf('.') != -1 && !(root.toString().indexOf('.') == root.toString().length() - 1
+						|| root.toString().charAt(root.toString().indexOf('.')) == '0'))
+					remainingDegree = remainingDegree.multiply(degree);
+				else
+					ret = root.toBigInteger();
+			}
+
+			Integer base = new Integer(negative ? ret.negate() : ret);
+			Integer exponent = new Integer(recip ? remainingDegree.negate() : remainingDegree);
+
+			if (exponent.equals(Expression.one))
+				return base;
+			else if (exponent.equals(Expression.negative_one))
+				return base.reciprocate();
+			else
+				return new Power(base, exponent.reciprocate());
+		} else
+			return null;
 	}
 
 	public static Expression pow(Variable b, Integer e) {
