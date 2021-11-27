@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 
 import soluturus.utils.internal.Simplifier;
-import soluturus.utils.internal.Symbol;
 
 /**
  * 
@@ -65,7 +64,7 @@ import soluturus.utils.internal.Symbol;
  * @author Miles K. Bertrand
  *
  */
-public interface Expression extends Cloneable, Serializable, Symbol {
+public interface Expression extends Cloneable, Serializable {
 
 	public static final Variable pi = new Variable("π");
 	public static final Variable i = new Variable("i");
@@ -74,6 +73,7 @@ public interface Expression extends Cloneable, Serializable, Symbol {
 	public static final Integer negative_one = Integer.of(-1);
 	public static final Integer zero = Integer.of(0);
 	public static final Integer one = Integer.of(1);
+	public static final Expression one_half = of("1/2");
 	public static final Integer two = Integer.of(2);
 	public static final Integer ten = Integer.of(10);
 
@@ -92,11 +92,11 @@ public interface Expression extends Cloneable, Serializable, Symbol {
 	}
 
 	public static Expression of(String s) {
-		return Simplifier.simplify(s);
+		return Simplifier.parse(s);
 	}
-	
+
 	public Expression clone();
-	
+
 	public Expression add(Expression addend);
 
 	public default Expression add(Expression... addends) {
