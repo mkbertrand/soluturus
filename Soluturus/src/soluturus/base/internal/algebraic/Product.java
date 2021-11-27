@@ -200,11 +200,18 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 	@Override
 	public String toString() {
 
-		StringBuilder sb = new StringBuilder(factors[0].toString());
+		if (isFraction())
+			if (factors[0] instanceof Integer)
+				return factors[0].toString() + "/" + ((Power) factors[1]).base();
+			else
+				return factors[1].toString() + "/" + ((Power) factors[0]).base();
+		else {
+			StringBuilder sb = new StringBuilder(factors[0].toString());
 
-		for (int i = 1; i < factors.length; i++)
-			sb.append("*" + factors[i].toString());
+			for (int i = 1; i < factors.length; i++)
+				sb.append("*" + factors[i].toString());
 
-		return sb.toString();
+			return sb.toString();
+		}
 	}
 }
