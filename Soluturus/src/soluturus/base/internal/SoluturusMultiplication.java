@@ -87,7 +87,6 @@ public final class SoluturusMultiplication {
 			if (SoluturusMath.canMultiply(factors[i], m2)) {
 
 				Expression prod = factors[i].multiply(m2);
-				// TODO is this right?
 				return SoluturusMath.productRemove(m1, i).multiply(prod);
 			}
 
@@ -189,7 +188,7 @@ public final class SoluturusMultiplication {
 		if (m2.exponent().equals(Expression.negative_one))
 			return m1.divide(m2.base());
 		else if (m2.base().equals(m1) && SoluturusCanAdd.canAdd(Expression.one, m2.exponent()))
-			return m2.base().pow(m2.exponent().add(Expression.one));
+			return m1.pow(m2.exponent().add(Expression.one));
 		else
 			return new Product(m1, m2);
 	}
