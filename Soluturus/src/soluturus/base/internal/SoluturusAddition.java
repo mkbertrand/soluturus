@@ -165,7 +165,7 @@ public final class SoluturusAddition {
 			return a2;
 		else if (a2.isFraction())
 			// a+b^-1 = (a*b+1) / b, and a*b+1 cannot be divisible by b when b != 1
-			return new Product(a1.multiply(a2.base()).add(Expression.one), a2);
+			return a1.multiply(a2.base()).add(Expression.one).divide(a2.base());
 		else
 			// TODO check whether any other situations could result in non-sum
 			return new Sum(a1, a2);
