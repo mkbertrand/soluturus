@@ -38,7 +38,7 @@ final class SoluturusMath {
 		else
 			return SoluturusMath.productRemove(prod, removeIndex);
 	}
-	
+
 	static boolean canMultiply(Expression m1, Expression m2) {
 		if (m1.equals(Expression.zero) || m2.equals(Expression.zero) || m1.equals(Expression.one)
 				|| m2.equals(Expression.one))
