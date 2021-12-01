@@ -22,10 +22,11 @@ import soluturus.base.expressions.Variable;
  */
 public final class Simplifier {
 
-	private static final HashMap<String, Character> greekletters = new HashMap<String, Character>();
+	private static final HashMap<String, Character> greekletters;
 	private static final HashMap<String, Function<Expression[], Expression>> functions = new HashMap<String, Function<Expression[], Expression>>();
 
 	static {
+		greekletters = new HashMap<String, Character>();
 		greekletters.put("Alpha", '\u0391');
 		greekletters.put("alpha", '\u03B1');
 		greekletters.put("Beta", '\u0392');
