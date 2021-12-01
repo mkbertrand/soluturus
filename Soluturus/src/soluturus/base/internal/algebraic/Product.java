@@ -18,6 +18,8 @@ import soluturus.base.internal.SoluturusMultiplication;
  * factor<sub>2</sub> ...* factor<sub>n</sub> is the fully simplified form. It
  * can be operated on as a single unit and can interact with any other
  * Expression.
+ * <p>
+ * Products may not contain Products or Sums in their factors.
  * 
  * @author Miles K. Bertrand
  * 
