@@ -92,6 +92,20 @@ public final class SoluturusExponentiation {
 		return null;
 	}
 
+	private static Expression sum_exponent_pow(Expression base, Sum exponent) {
+		Expression power = Expression.one;
+		for (Expression e : exponent)
+			power = power.multiply(base.pow(e));
+		return power;
+	}
+
+	private static Expression product_base_pow(Product base, Expression exponent) {
+		Expression power = Expression.one;
+		for (Expression e : base)
+			power = power.multiply(e.pow(exponent));
+		return power;
+	}
+
 	private static Expression product_exponent_pow(Expression base, Product exponent) {
 
 		ArrayList<Expression> finexp = new ArrayList<>(Arrays.asList(exponent.factors()));
@@ -128,6 +142,13 @@ public final class SoluturusExponentiation {
 			return Expression.zero;
 		else
 			return new Power(b, e);
+	}
+
+	public static Expression pow(Integer b, Sum e) {
+		if (b.equals(Expression.zero))
+			return Expression.zero;
+		else
+			return sum_exponent_pow(b, e);
 	}
 
 	public static Expression pow(Integer b, Product e) {
@@ -207,12 +228,15 @@ public final class SoluturusExponentiation {
 		return new Power(b, e);
 	}
 
+	public static Expression pow(Variable b, Sum e) {
+		return sum_exponent_pow(b, e);
+	}
+
 	public static Expression pow(Variable b, Product e) {
 		return product_exponent_pow(b, e);
 	}
 
 	public static Expression pow(Variable b, Power e) {
-		// TODO
 		return new Power(b, e);
 	}
 
@@ -247,21 +271,57 @@ public final class SoluturusExponentiation {
 				exponent = exponent.shiftRight(1);
 			}
 			return result;
-
-			// TODO
 		}
+	}
+
+	public static Expression pow(Sum b, Variable e) {
+		// TODO
+		return new Power(b, e);
+	}
+
+	public static Expression pow(Sum b, Sum e) {
+		return sum_exponent_pow(b, e);
 	}
 
 	public static Expression pow(Sum b, Product e) {
 		return product_exponent_pow(b, e);
 	}
 
+	public static Expression pow(Sum b, Power e) {
+		// TODO
+		return new Power(b, e);
+	}
+
+	public static Expression pow(Product b, Integer e) {
+		return product_base_pow(b, e);
+	}
+
+	public static Expression pow(Product b, Variable e) {
+		return product_base_pow(b, e);
+	}
+
+	public static Expression pow(Product b, Sum e) {
+		return sum_exponent_pow(b, e);
+	}
+
 	public static Expression pow(Product b, Product e) {
 		return product_exponent_pow(b, e);
 	}
 
+	public static Expression pow(Product b, Power e) {
+		return product_base_pow(b, e);
+	}
+
 	public static Expression pow(Power b, Integer e) {
 		return b.base().pow(b.exponent().multiply(e));
+	}
+
+	public static Expression pow(Power b, Variable e) {
+		return b.base().pow(b.exponent().multiply(e));
+	}
+
+	public static Expression pow(Power b, Sum e) {
+		return sum_exponent_pow(b, e);
 	}
 
 	public static Expression pow(Power b, Product e) {
