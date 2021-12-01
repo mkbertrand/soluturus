@@ -2,7 +2,7 @@ package soluturus.base.expressions;
 
 import java.math.BigInteger;
 
-import soluturus.base.ZeroDivisionException;
+import soluturus.base.exceptions.ZeroDivisionException;
 import soluturus.base.internal.SoluturusAddition;
 import soluturus.base.internal.SoluturusDivision;
 import soluturus.base.internal.SoluturusExponentiation;
@@ -53,7 +53,7 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	public Integer clone() {
 		return new Integer(number);
 	}
-	
+
 	@Override
 	public Expression add(Expression addend) {
 		return SoluturusAddition.add(this, addend);
@@ -89,7 +89,8 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	public Expression reciprocate() {
 		if (number.equals(BigInteger.ZERO))
 			throw new ZeroDivisionException();
-		return new Power(this, negative_one);
+		else
+			return new Power(this, negative_one);
 	}
 
 	@Override
