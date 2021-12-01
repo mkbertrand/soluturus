@@ -18,7 +18,7 @@ import soluturus.base.internal.trigonometric.Sine;
 public final record Variable(String name) implements Expression {
 
 	public static final boolean isAcceptableName(char c) {
-		return Character.getType(c) == Character.CURRENCY_SYMBOL || Character.isAlphabetic(c);
+		return Character.getType(c) == Character.CURRENCY_SYMBOL || Character.isAlphabetic(c) || c == '_';
 	}
 
 	public static final boolean isAcceptableName(String s) {
@@ -42,7 +42,7 @@ public final record Variable(String name) implements Expression {
 	public Variable clone() {
 		return new Variable(name);
 	}
-	
+
 	@Override
 	public Expression add(Expression addend) {
 		if (addend instanceof Integer a2)
