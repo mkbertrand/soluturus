@@ -1,5 +1,6 @@
 package soluturus.base.internal.algebraic;
 
+import soluturus.base.exceptions.ExpressionContainmentException;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
@@ -11,6 +12,9 @@ import soluturus.base.internal.SoluturusMultiplication;
  * Represents a base raised to a power wherein base<sup>exponent</sup> is the
  * fully simplified form. It can be operated on as a single unit and can
  * interact with any other Expression.
+ * <p>
+ * Powers may not contain Powers or Products and the base position and may not have Sums in the
+ * exponent position.
  * 
  * @author Miles K. Bertrand
  * 
@@ -20,6 +24,13 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	// Returns whether this Power represents a fraction with a numerator of one.
 	public boolean isFraction() {
 		return base instanceof Integer && exponent.equals(negative_one);
+	}
+
+	public Power(Expression base, Expression exponent) {
+		if (base instanceof Power || base instanceof Product || exponent instanceof Sum)
+			throw new ExpressionContainmentException();
+		this.base = base;
+		this.exponent = exponent;
 	}
 
 	@Override
