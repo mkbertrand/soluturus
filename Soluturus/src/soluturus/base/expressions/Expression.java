@@ -67,7 +67,6 @@ import soluturus.utils.internal.Simplifier;
 public interface Expression extends Cloneable, Serializable {
 
 	public static final Variable pi = new Variable("π");
-	public static final Variable i = new Variable("i");
 	public static final Variable e = new Variable("e");
 
 	public static final Integer negative_one = Integer.of(-1);
@@ -76,6 +75,8 @@ public interface Expression extends Cloneable, Serializable {
 	public static final Expression one_half = of("1/2");
 	public static final Integer two = Integer.of(2);
 	public static final Integer ten = Integer.of(10);
+
+	public static final Expression i = negative_one.pow(one_half);
 
 	public static Integer of(long l) {
 		return Integer.of(l);
