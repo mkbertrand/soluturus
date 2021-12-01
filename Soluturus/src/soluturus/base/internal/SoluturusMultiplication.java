@@ -74,7 +74,7 @@ public final class SoluturusMultiplication {
 	private static Expression sum_multiply(Sum m1, Expression m2) {
 
 		Expression product = Expression.zero;
-		for (Expression e : m1.addends())
+		for (Expression e : m1)
 			product = product.add(e.multiply(m2));
 		return product;
 	}
@@ -225,7 +225,7 @@ public final class SoluturusMultiplication {
 
 	public static Expression multiply(Product m1, Product m2) {
 		Expression product = m1;
-		for (Expression e : m2.factors())
+		for (Expression e : m2)
 			product = product.multiply(e);
 		return product;
 	}
