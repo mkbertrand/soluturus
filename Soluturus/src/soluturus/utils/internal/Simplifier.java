@@ -217,11 +217,13 @@ public final class Simplifier {
 		} while (found);
 
 		for (int i = 0; i < expression.size(); i++)
-			if (expression.get(i)instanceof String variable && !isOperator(variable)) {
+			if (expression.get(i)instanceof String variable && !isOperator(variable))
 				if (greekletters.containsKey(variable))
 					variable = Character.toString(greekletters.get(variable));
-				expression.set(i, new Variable(variable));
-			}
+				else if (variable.equals("i"))
+					expression.set(i, Expression.i);
+				else
+					expression.set(i, new Variable(variable));
 
 		// If there is a number and a variable next to each other, insert a
 		// multiplication sign
