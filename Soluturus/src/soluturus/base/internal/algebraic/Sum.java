@@ -18,6 +18,8 @@ import soluturus.base.internal.SoluturusMultiplication;
  * addend<sub>2</sub> ...* addend<sub>n</sub> is the fully simplified form. It
  * can be operated on as a single unit and can interact with any other
  * Expression.
+ * <p>
+ * Sums may not contain Sums in the addend positions.
  * 
  * @author Miles K. Bertrand
  * 
