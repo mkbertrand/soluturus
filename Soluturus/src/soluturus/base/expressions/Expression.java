@@ -3,7 +3,7 @@ package soluturus.base.expressions;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-import soluturus.utils.internal.Simplifier;
+import soluturus.utils.internal.ExpressionParser;
 
 /**
  * 
@@ -72,9 +72,10 @@ public interface Expression extends Cloneable, Serializable {
 	public static final Integer negative_one = Integer.of(-1);
 	public static final Integer zero = Integer.of(0);
 	public static final Integer one = Integer.of(1);
-	public static final Expression one_half = of("1/2");
 	public static final Integer two = Integer.of(2);
 	public static final Integer ten = Integer.of(10);
+
+	public static final Expression one_half = two.reciprocate();
 
 	public static final Expression i = negative_one.pow(one_half);
 
@@ -93,7 +94,7 @@ public interface Expression extends Cloneable, Serializable {
 	}
 
 	public static Expression of(String s) {
-		return Simplifier.parse(s);
+		return ExpressionParser.parse(s);
 	}
 
 	public Expression clone();
