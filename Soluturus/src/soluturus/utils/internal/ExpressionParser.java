@@ -1,9 +1,11 @@
 package soluturus.utils.internal;
 
 import java.math.BigDecimal;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -20,61 +22,37 @@ import soluturus.base.expressions.Variable;
  * @author Miles K. Bertrand
  * 
  */
-public final class Simplifier {
+public final class ExpressionParser {
 
 	private static final HashMap<String, Character> greekletters;
-	private static final HashMap<String, Function<Expression[], Expression>> functions = new HashMap<String, Function<Expression[], Expression>>();
+	private static final HashMap<String, Function<Expression[], Expression>> functions = new HashMap<>();
 
 	static {
-		greekletters = new HashMap<String, Character>();
-		greekletters.put("Alpha", '\u0391');
-		greekletters.put("alpha", '\u03B1');
-		greekletters.put("Beta", '\u0392');
-		greekletters.put("beta", '\u03B2');
-		greekletters.put("Gamma", '\u0393');
-		greekletters.put("gamma", '\u03B3');
-		greekletters.put("Delta", '\u0394');
-		greekletters.put("delta", '\u03B4');
-		greekletters.put("Epsilon", '\u0395');
-		greekletters.put("epsilon", '\u03B5');
-		greekletters.put("Zeta", '\u0396');
-		greekletters.put("zeta", '\u03B6');
-		greekletters.put("Eta", '\u0397');
-		greekletters.put("eta", '\u03B7');
-		greekletters.put("Theta", '\u0398');
-		greekletters.put("theta", '\u03B8');
-		greekletters.put("Iota", '\u0399');
-		greekletters.put("iota", '\u03B9');
-		greekletters.put("Kappa", '\u039A');
-		greekletters.put("kappa", '\u03BA');
-		greekletters.put("Lambda", '\u039B');
-		greekletters.put("lambda", '\u03BB');
-		greekletters.put("Mu", '\u039C');
-		greekletters.put("mu", '\u03BC');
-		greekletters.put("Nu", '\u039D');
-		greekletters.put("nu", '\u03BD');
-		greekletters.put("Xi", '\u039E');
-		greekletters.put("xi", '\u03BE');
-		greekletters.put("Omicron", '\u039F');
-		greekletters.put("omicron", '\u03BF');
-		greekletters.put("Pi", '\u03A0');
-		greekletters.put("pi", '\u03C0');
-		greekletters.put("Rho", '\u03A1');
-		greekletters.put("rho", '\u03C1');
-		greekletters.put("Sigma", '\u03A3');
-		greekletters.put("sigma", '\u03C3');
-		greekletters.put("Tau", '\u03A4');
-		greekletters.put("tau", '\u03C4');
-		greekletters.put("Upsilon", '\u03A5');
-		greekletters.put("upsilon", '\u03C5');
-		greekletters.put("Phi", '\u03A6');
-		greekletters.put("phi", '\u03C6');
-		greekletters.put("Chi", '\u03A7');
-		greekletters.put("chi", '\u03C7');
-		greekletters.put("Psi", '\u03A8');
-		greekletters.put("psi", '\u03C8');
-		greekletters.put("Omega", '\u03A9');
-		greekletters.put("omega", '\u03C9');
+		greekletters = new HashMap<>(Map.ofEntries(new SimpleEntry<>("Alpha", '\u0391'),
+				new SimpleEntry<>("alpha", '\u03B1'), new SimpleEntry<>("Beta", '\u0392'),
+				new SimpleEntry<>("beta", '\u03B2'), new SimpleEntry<>("Gamma", '\u0393'),
+				new SimpleEntry<>("gamma", '\u03B3'), new SimpleEntry<>("Delta", '\u0394'),
+				new SimpleEntry<>("delta", '\u03B4'), new SimpleEntry<>("Epsilon", '\u0395'),
+				new SimpleEntry<>("epsilon", '\u03B5'), new SimpleEntry<>("Zeta", '\u0396'),
+				new SimpleEntry<>("zeta", '\u03B6'), new SimpleEntry<>("Eta", '\u0397'),
+				new SimpleEntry<>("eta", '\u03B7'), new SimpleEntry<>("Heta", '\u0397'),
+				new SimpleEntry<>("heta", '\u03B7'), new SimpleEntry<>("Theta", '\u0398'),
+				new SimpleEntry<>("theta", '\u03B8'), new SimpleEntry<>("Iota", '\u0399'),
+				new SimpleEntry<>("iota", '\u03B9'), new SimpleEntry<>("Kappa", '\u039A'),
+				new SimpleEntry<>("kappa", '\u03BA'), new SimpleEntry<>("Lambda", '\u039B'),
+				new SimpleEntry<>("lambda", '\u03BB'), new SimpleEntry<>("Mu", '\u039C'),
+				new SimpleEntry<>("mu", '\u03BC'), new SimpleEntry<>("Nu", '\u039D'), new SimpleEntry<>("nu", '\u03BD'),
+				new SimpleEntry<>("Xi", '\u039E'), new SimpleEntry<>("xi", '\u03BE'),
+				new SimpleEntry<>("Omicron", '\u039F'), new SimpleEntry<>("omicron", '\u03BF'),
+				new SimpleEntry<>("Pi", '\u03A0'), new SimpleEntry<>("pi", '\u03C0'),
+				new SimpleEntry<>("Rho", '\u03A1'), new SimpleEntry<>("rho", '\u03C1'),
+				new SimpleEntry<>("Sigma", '\u03A3'), new SimpleEntry<>("sigma", '\u03C3'),
+				new SimpleEntry<>("Tau", '\u03A4'), new SimpleEntry<>("tau", '\u03C4'),
+				new SimpleEntry<>("Upsilon", '\u03A5'), new SimpleEntry<>("upsilon", '\u03C5'),
+				new SimpleEntry<>("Phi", '\u03A6'), new SimpleEntry<>("phi", '\u03C6'),
+				new SimpleEntry<>("Chi", '\u03A7'), new SimpleEntry<>("chi", '\u03C7'),
+				new SimpleEntry<>("Psi", '\u03A8'), new SimpleEntry<>("psi", '\u03C8'),
+				new SimpleEntry<>("Omega", '\u03A9'), new SimpleEntry<>("omega", '\u03C9')));
 
 		functions.put("sin", e -> Trigonometric.sin(e[0]));
 		functions.put("ln", e -> e[0].ln());
@@ -124,35 +102,36 @@ public final class Simplifier {
 		// order of operations.
 		while (input.indexOf('(') != -1) {
 
-			int start = -1;
-			if ((start = input.indexOf('(', start + 1)) != -1) {
+			int openIndex = -1;
+			if ((openIndex = input.indexOf('(', openIndex + 1)) != -1) {
 
 				// Finds the matching closing parenthesis to the opening. Since there can be
 				// multiple layers of parentheses, the correct one is found by counting up for
 				// each opening and down for each closing.
-				int dif = 1;
-				int end = start + 1;
+				int openParDif = 1;
+				int closeIndex = openIndex + 1;
 
-				while (dif != 0) {
-					if (input.charAt(end) == ')')
-						dif--;
-					else if (input.charAt(end) == '(')
-						dif++;
-					end++;
+				while (openParDif != 0) {
+					if (input.charAt(closeIndex) == ')')
+						openParDif--;
+					else if (input.charAt(closeIndex) == '(')
+						openParDif++;
+					closeIndex++;
 				}
 
-				String inParentheses = input.substring(start + 1, end - 1);
+				String inParentheses = input.substring(openIndex + 1, closeIndex - 1);
 
-				int function_call_start = start;
+				int function_call_start = openIndex;
 
 				while (function_call_start != 0 && Variable.isAcceptableName(input.charAt(function_call_start - 1)))
 					function_call_start--;
 
-				String replacePattern = Pattern.quote(input.substring(function_call_start, end));
+				String replacePattern = Pattern.quote(input.substring(function_call_start, closeIndex));
 
-				// All shortcut call args are passed by putting them into parentheses directly
+				// All shortcut call arguments are passed by putting them into parentheses
+				// directly
 				// following the shortcut's name, which emulates java static method calls.
-				if (function_call_start == start) {
+				if (function_call_start == openIndex) {
 					replacedParentheticals.add(parse(inParentheses));
 					input = input.replaceFirst(replacePattern, ")");
 				} else {
@@ -166,7 +145,7 @@ public final class Simplifier {
 					for (int i = 0; i < functionarguments.length; i++)
 						functionarguments[i] = parse(functionargumentstrings[i]);
 
-					Expression result = functions.get(input.substring(function_call_start, start))
+					Expression result = functions.get(input.substring(function_call_start, openIndex))
 							.apply(functionarguments);
 
 					replacedParentheticals.add(result);
@@ -198,10 +177,10 @@ public final class Simplifier {
 
 		// Parses numbers into Decimals
 		for (int i = 0; i < expression.size(); i++)
-			try {
-				expression.set(i, parse(new BigDecimal((String) expression.get(i))));
-			} catch (ClassCastException | NumberFormatException e) {
-			}
+			if (expression.get(i) instanceof String expri)
+				expression.set(i, parse(new BigDecimal(expri)));
+		
+		System.out.println(expression);
 
 		do {
 			found = false;
@@ -216,10 +195,12 @@ public final class Simplifier {
 
 		} while (found);
 
+		// Parses strings into Variables, with Anglicized names for Greek letters being
+		// replaced with the letter referenced.
 		for (int i = 0; i < expression.size(); i++)
 			if (expression.get(i)instanceof String variable && !isOperator(variable))
 				if (greekletters.containsKey(variable))
-					variable = Character.toString(greekletters.get(variable));
+					expression.set(i, new Variable(Character.toString(greekletters.get(variable))));
 				else if (variable.equals("i"))
 					expression.set(i, Expression.i);
 				else
