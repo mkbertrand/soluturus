@@ -25,7 +25,7 @@ import soluturus.base.expressions.Variable;
 public final class ExpressionParser {
 
 	private static final HashMap<String, Character> greekletters;
-	private static final HashMap<String, Function<Expression[], Expression>> functions = new HashMap<>();
+	private static final HashMap<String, Function<Expression[], Expression>> functions;
 
 	static {
 		greekletters = new HashMap<>(Map.ofEntries(new SimpleEntry<>("Alpha", '\u0391'),
@@ -54,11 +54,8 @@ public final class ExpressionParser {
 				new SimpleEntry<>("Psi", '\u03A8'), new SimpleEntry<>("psi", '\u03C8'),
 				new SimpleEntry<>("Omega", '\u03A9'), new SimpleEntry<>("omega", '\u03C9')));
 
-		functions.put("sin", e -> Trigonometric.sin(e[0]));
-		functions.put("ln", e -> e[0].ln());
-		functions.put("log", e -> e[0].log(e[1]));
-		functions.put("root", e -> e.length == 1 ? e[0].root(Expression.one_half) : e[0].root(e[1]));
-
+		functions = new HashMap<>(Map.of("sin", e -> Trigonometric.sin(e[0]), "ln", e -> e[0].ln(), "log",
+				e -> e[0].log(e[1]), "root", e -> e.length == 1 ? e[0].root(Expression.one_half) : e[0].root(e[1])));
 	}
 
 	private static final Expression parse(BigDecimal b) {
@@ -72,7 +69,7 @@ public final class ExpressionParser {
 
 	private static final boolean isNumberCharacter(String s) {
 		for (char c : s.toCharArray())
-			if (Character.getType(c) != Character.DECIMAL_DIGIT_NUMBER && c != '.')
+			if (Character.getType(c) != Character.DECIMAL_DIGIT_NUMBER && c != '.' && c != ',')
 				return false;
 		return true;
 	}
@@ -165,22 +162,19 @@ public final class ExpressionParser {
 
 		// Combined numbers with adjacent number characters to form large consecutive
 		// numeric Strings
-		for (int i = 1; i < expression.size(); i++) {
+		for (int i = 1; i < expression.size(); i++)
 			if (expression.get(i - 1)instanceof String str1 && expression.get(i)instanceof String str2
 					&& isNumberCharacter(str1) && isNumberCharacter(str2)) {
 				expression.set(i - 1, str1 + str2);
 				expression.remove(i--);
 			}
-		}
 
 		boolean found;
 
 		// Parses numbers into Decimals
 		for (int i = 0; i < expression.size(); i++)
-			if (expression.get(i) instanceof String expri)
-				expression.set(i, parse(new BigDecimal(expri)));
-		
-		System.out.println(expression);
+			if (expression.get(i)instanceof String expri)
+				expression.set(i, parse(new BigDecimal(expri.replaceAll(",", ""))));
 
 		do {
 			found = false;
@@ -195,8 +189,8 @@ public final class ExpressionParser {
 
 		} while (found);
 
-		// Parses strings into Variables, with Anglicized names for Greek letters being
-		// replaced with the letter referenced.
+		// Parses strings into Variables, with English names for Greek letters being
+		// replaced with the Greek letters referenced.
 		for (int i = 0; i < expression.size(); i++)
 			if (expression.get(i)instanceof String variable && !isOperator(variable))
 				if (greekletters.containsKey(variable))
