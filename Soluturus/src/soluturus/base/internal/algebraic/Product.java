@@ -200,6 +200,19 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 	}
 
 	@Override
+	public boolean isMonomial() {
+		for (Expression e : factors)
+			if (!e.isMonomial())
+				return false;
+		return true;
+	}
+	
+	@Override
+	public boolean isPolynomial() {
+		return false;
+	}
+	
+	@Override
 	public String toString() {
 
 		if (isFraction())
