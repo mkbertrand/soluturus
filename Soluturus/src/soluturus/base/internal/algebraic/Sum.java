@@ -151,6 +151,19 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 				return false;
 		return true;
 	}
+	
+	@Override
+	public boolean isMonomial() {
+		return false;
+	}
+	
+	@Override
+	public boolean isPolynomial() {
+		for (Expression e : addends)
+			if (!e.isMonomial())
+				return false;
+		return true;
+	}
 
 	@Override
 	public String toString() {
