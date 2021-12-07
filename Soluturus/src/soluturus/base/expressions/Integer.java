@@ -89,6 +89,10 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	public Expression reciprocate() {
 		if (number.equals(BigInteger.ZERO))
 			throw new ZeroDivisionException();
+		else if (number.equals(BigInteger.ONE))
+			return this;
+		else if (equals(negative_one))
+			return this;
 		else
 			return new Power(this, negative_one);
 	}
@@ -123,6 +127,16 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	@Override
 	public boolean isKnown() {
 		return true;
+	}
+
+	@Override
+	public boolean isMonomial() {
+		return true;
+	}
+
+	@Override
+	public boolean isPolynomial() {
+		return false;
 	}
 
 	@Override
