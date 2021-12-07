@@ -110,6 +110,16 @@ public final record Variable(String name) implements Expression {
 	public final boolean isKnown() {
 		return false;
 	}
+	
+	@Override
+	public boolean isMonomial() {
+		return true;
+	}
+
+	@Override
+	public boolean isPolynomial() {
+		return false;
+	}
 
 	@Override
 	public String toString() {
