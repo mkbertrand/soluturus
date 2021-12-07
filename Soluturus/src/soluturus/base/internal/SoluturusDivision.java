@@ -1,6 +1,8 @@
 package soluturus.base.internal;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import soluturus.base.exceptions.ZeroDivisionException;
 import soluturus.base.expressions.Expression;
@@ -59,6 +61,25 @@ public final class SoluturusDivision {
 		return null;
 	}
 
+	private static Expression general_division(Expression dividend, Expression divisor) {
+
+		ArrayList<Expression> divnFactors = new ArrayList<>(Arrays.asList(dividend.factor()));
+		ArrayList<Expression> divrFactors = new ArrayList<>(Arrays.asList(divisor.factor()));
+
+		divrFactors.removeIf(divnFactors::remove);
+
+		Expression newdividend = SoluturusMath
+				.expressionFromFactors(divnFactors.toArray(new Expression[divnFactors.size()]));
+		Expression newdivisor = SoluturusMath
+				.expressionFromFactors(divrFactors.toArray(new Expression[divrFactors.size()]));
+
+		// TODO
+		if (dividend.equals(newdividend) && newdivisor.equals(newdivisor))
+			return new Product(dividend, divisor.reciprocate());
+		else
+			return newdividend.divide(newdivisor);
+	}
+
 	private static Expression product_divide(Product dividend, Expression divisor) {
 
 		Expression[] factors = dividend.factors();
@@ -82,6 +103,36 @@ public final class SoluturusDivision {
 		result[factors.length] = divisor.reciprocate();
 		return new Product(result);
 
+	}
+
+	private static Expression product_divide(Expression dividend, Product divisor) {
+
+		Expression[] factors = divisor.factors();
+
+		for (int i = 0; i < factors.length; i++)
+			if (SoluturusMath.canDivide(dividend, factors[i])) {
+				Expression prod = dividend.divide(factors[i]);
+
+				if (factors.length == 2)
+					return prod.divide(factors[i == 0 ? 1 : 0]);
+				else {
+					Expression[] result = new Expression[factors.length - 1];
+					System.arraycopy(factors, 0, result, 0, i);
+					System.arraycopy(factors, i + 1, result, i, factors.length - i - 1);
+					return prod.divide(new Product(result));
+				}
+			}
+
+		Expression rec = divisor.reciprocate();
+
+		if (rec instanceof Product recp) {
+			factors = recp.factors();
+			Expression[] result = new Expression[factors.length + 1];
+			System.arraycopy(factors, 0, result, 0, factors.length);
+			result[factors.length] = dividend;
+			return new Product(result);
+		} else
+			return new Product(dividend, rec);
 	}
 
 	public static Expression divide(Integer dividend, Integer divisor) {
@@ -120,6 +171,10 @@ public final class SoluturusDivision {
 			return new Product(dividend, divisor.reciprocate());
 	}
 
+	public static Expression divide(Integer dividend, Product divisor) {
+		return product_divide(dividend, divisor);
+	}
+
 	public static Expression divide(Variable dividend, Integer divisor) {
 		if (divisor.equals(Expression.zero))
 			throw new ZeroDivisionException();
@@ -136,6 +191,10 @@ public final class SoluturusDivision {
 			return Expression.one;
 		else
 			return new Product(dividend, divisor.reciprocate());
+	}
+
+	public static Expression divide(Variable dividend, Product divisor) {
+		return product_divide(dividend, divisor);
 	}
 
 	public static Expression divide(Product dividend, Integer divisor) {
