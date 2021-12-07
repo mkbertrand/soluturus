@@ -9,7 +9,7 @@ public record Sine(Expression angle) implements Expression {
 	public Sine clone() {
 		return new Sine(angle);
 	}
-	
+
 	@Override
 	public Expression add(Expression addend) {
 		// TODO Auto-generated method stub
@@ -71,5 +71,15 @@ public record Sine(Expression angle) implements Expression {
 	@Override
 	public final boolean isKnown() {
 		return angle.isKnown();
+	}
+
+	@Override
+	public boolean isMonomial() {
+		return false;
+	}
+
+	@Override
+	public boolean isPolynomial() {
+		return false;
 	}
 }
