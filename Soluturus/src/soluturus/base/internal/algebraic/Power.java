@@ -13,8 +13,8 @@ import soluturus.base.internal.SoluturusMultiplication;
  * fully simplified form. It can be operated on as a single unit and can
  * interact with any other Expression.
  * <p>
- * Powers may not contain Powers or Products and the base position and may not have Sums in the
- * exponent position.
+ * Powers may not contain Powers or Products and the base position and may not
+ * have Sums in the exponent position.
  * 
  * @author Miles K. Bertrand
  * 
@@ -121,6 +121,16 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	@Override
 	public boolean isKnown() {
 		return base.isKnown() && exponent.isKnown();
+	}
+
+	@Override
+	public boolean isMonomial() {
+		return exponent instanceof Integer && (base instanceof Variable || base instanceof Integer);
+	}
+	
+	@Override
+	public boolean isPolynomial() {
+		return false;
 	}
 
 	@Override
