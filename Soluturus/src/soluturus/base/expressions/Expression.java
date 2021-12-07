@@ -152,4 +152,8 @@ public interface Expression extends Cloneable, Serializable {
 	public Expression[] factor();
 
 	public boolean isKnown();
+
+	public boolean isMonomial();
+
+	public boolean isPolynomial();
 }
