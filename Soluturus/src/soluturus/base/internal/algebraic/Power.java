@@ -21,11 +21,6 @@ import soluturus.base.internal.SoluturusMultiplication;
  */
 public final record Power(Expression base, Expression exponent) implements Expression {
 
-	// Returns whether this Power represents a fraction with a numerator of one.
-	public boolean isFraction() {
-		return base instanceof Integer && exponent.equals(negative_one);
-	}
-
 	public Power(Expression base, Expression exponent) {
 		if (base instanceof Power || base instanceof Product || exponent instanceof Sum)
 			throw new ExpressionContainmentException();
@@ -67,7 +62,7 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	}
 
 	@Override
-	public Expression divide(Expression dividend) {
+	public Expression divide(Expression divisor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -108,6 +103,18 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	}
 
 	@Override
+	public Expression derive(Variable v) {
+		// TODO check
+		if (exponent.derive(v).equals(zero))
+			return exponent.multiply(base.pow(exponent.subtract(one)), base.derive(v));
+		else if (base.derive(v).equals(zero))
+			return multiply(base.ln(), exponent.derive(v));
+		else
+			return multiply(
+					exponent.derive(v).multiply(base.ln()).add(exponent.multiply(base, base.derive(v).reciprocate())));
+	}
+
+	@Override
 	public Expression substitute(Variable v, Expression replacement) {
 		return base.substitute(v, replacement).pow(exponent.substitute(v, replacement));
 	}
@@ -127,10 +134,16 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	public boolean isMonomial() {
 		return exponent instanceof Integer && (base instanceof Variable || base instanceof Integer);
 	}
-	
+
 	@Override
 	public boolean isPolynomial() {
 		return false;
+	}
+
+	// Returns whether this Power represents a fraction with a numerator of one.
+	@Override
+	public boolean isFraction() {
+		return base instanceof Integer && exponent.equals(negative_one);
 	}
 
 	@Override
