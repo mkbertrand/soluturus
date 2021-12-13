@@ -12,15 +12,6 @@ final class SoluturusMath {
 		throw new Error();
 	}
 
-	static Expression expressionFromFactors(Expression... factors) {
-		if (factors.length == 0)
-			return Expression.one;
-		else if (factors.length == 1)
-			return factors[0];
-		else
-			return Expression.one.multiply(factors);
-	}
-
 	static Expression productRemove(Product p, int index) {
 
 		Expression[] factors = p.factors();
@@ -64,7 +55,8 @@ final class SoluturusMath {
 			return !(base.pow(exponent) instanceof Power);
 	}
 
+	// TODO
 	static boolean canDivide(Expression dividend, Expression divisor) {
-		return false;
+		return !(dividend.divide(divisor) instanceof Product);
 	}
 }
