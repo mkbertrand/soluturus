@@ -11,6 +11,7 @@ import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
 import soluturus.base.internal.SoluturusAddition;
 import soluturus.base.internal.SoluturusDivision;
+import soluturus.base.internal.SoluturusExponentiation;
 import soluturus.base.internal.SoluturusMultiplication;
 
 /**
@@ -52,15 +53,6 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 
 	public int length() {
 		return factors.length;
-	}
-
-	// Returns whether this is a fraction
-	public boolean isFraction() {
-		if (factors.length != 2)
-			return false;
-		else
-			return factors[0] instanceof Integer && factors[1]instanceof Power fac1 && fac1.isFraction()
-					|| factors[1] instanceof Integer && factors[0]instanceof Power fac0 && fac0.isFraction();
 	}
 
 	@Override
@@ -114,8 +106,7 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 
 	@Override
 	public Expression pow(Expression exponent) {
-		// TODO Auto-generated method stub
-		return null;
+		return SoluturusExponentiation.pow(this, exponent);
 	}
 
 	@Override
@@ -158,6 +149,22 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 	public Expression sin() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Expression derive(Variable v) {
+		if (factors.length == 2)
+			return factors[0].derive(v).multiply(factors[1]).add(factors[1].derive(v).multiply(factors[0]));
+		else {
+			Expression derivative = zero;
+			for (int i = 0; i < factors.length; i++) {
+				Expression[] result = new Expression[factors.length - 1];
+				System.arraycopy(factors, 0, result, 0, i);
+				System.arraycopy(factors, i + 1, result, i, factors.length - i - 1);
+				derivative = derivative.add(new Product(result).multiply(factors[i].derive(v)));
+			}
+			return derivative;
+		}
 	}
 
 	@Override
@@ -206,12 +213,22 @@ public final record Product(Expression[] factors) implements Expression, Iterabl
 				return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean isPolynomial() {
 		return false;
 	}
-	
+
+	// Returns whether this is a fraction
+	@Override
+	public boolean isFraction() {
+		if (factors.length != 2)
+			return false;
+		else
+			return factors[0] instanceof Integer && factors[1]instanceof Power fac1 && fac1.isFraction()
+					|| factors[1] instanceof Integer && factors[0]instanceof Power fac0 && fac0.isFraction();
+	}
+
 	@Override
 	public String toString() {
 
