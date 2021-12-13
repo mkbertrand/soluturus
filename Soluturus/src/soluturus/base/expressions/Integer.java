@@ -108,6 +108,11 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	}
 
 	@Override
+	public Integer derive(Variable v) {
+		return zero;
+	}
+	
+	@Override
 	public Integer substitute(Variable v, Expression replacement) {
 		return this;
 	}
@@ -139,6 +144,11 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 		return false;
 	}
 
+	@Override
+	public boolean isFraction() {
+		return true;
+	}
+	
 	@Override
 	public String toString() {
 		return number.toString();
