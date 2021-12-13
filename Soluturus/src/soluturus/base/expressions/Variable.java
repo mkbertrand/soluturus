@@ -102,6 +102,11 @@ public final record Variable(String name) implements Expression {
 	}
 
 	@Override
+	public Integer derive(Variable v) {
+		return equals(v) ? one : zero;
+	}
+
+	@Override
 	public Variable[] factor() {
 		return new Variable[] { this };
 	}
@@ -110,7 +115,7 @@ public final record Variable(String name) implements Expression {
 	public final boolean isKnown() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isMonomial() {
 		return true;
