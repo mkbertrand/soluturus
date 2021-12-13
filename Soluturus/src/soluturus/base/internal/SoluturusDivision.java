@@ -47,6 +47,20 @@ public final class SoluturusDivision {
 		return null;
 	}
 
+	public static Expression divide(Sum dividend, Expression divisor) {
+		if (divisor instanceof Integer castdivisor)
+			return divide(dividend, castdivisor);
+		else if (divisor instanceof Variable castdivisor)
+			return divide(dividend, castdivisor);
+		else if (divisor instanceof Sum castdivisor)
+			return divide(dividend, castdivisor);
+		else if (divisor instanceof Product castdivisor)
+			return divide(dividend, castdivisor);
+		else if (divisor instanceof Power castdivisor)
+			return divide(dividend, castdivisor);
+		return null;
+	}
+
 	public static Expression divide(Product dividend, Expression divisor) {
 		if (divisor instanceof Integer castdivisor)
 			return divide(dividend, castdivisor);
@@ -61,31 +75,13 @@ public final class SoluturusDivision {
 		return null;
 	}
 
-	private static Expression general_division(Expression dividend, Expression divisor) {
-
-		ArrayList<Expression> divnFactors = new ArrayList<>(Arrays.asList(dividend.factor()));
-		ArrayList<Expression> divrFactors = new ArrayList<>(Arrays.asList(divisor.factor()));
-
-		divrFactors.removeIf(divnFactors::remove);
-
-		Expression newdividend = SoluturusMath
-				.expressionFromFactors(divnFactors.toArray(new Expression[divnFactors.size()]));
-		Expression newdivisor = SoluturusMath
-				.expressionFromFactors(divrFactors.toArray(new Expression[divrFactors.size()]));
-
-		// TODO
-		if (dividend.equals(newdividend) && newdivisor.equals(newdivisor))
-			return new Product(dividend, divisor.reciprocate());
-		else
-			return newdividend.divide(newdivisor);
-	}
-
-	private static Expression product_divide(Product dividend, Expression divisor) {
+	private static Expression product_dividend(Product dividend, Expression divisor) {
 
 		Expression[] factors = dividend.factors();
 
 		for (int i = 0; i < factors.length; i++)
 			if (SoluturusMath.canDivide(factors[i], divisor)) {
+
 				Expression prod = factors[i].divide(divisor);
 
 				if (factors.length == 2)
@@ -105,7 +101,7 @@ public final class SoluturusDivision {
 
 	}
 
-	private static Expression product_divide(Expression dividend, Product divisor) {
+	private static Expression product_divisor(Expression dividend, Product divisor) {
 
 		Expression[] factors = divisor.factors();
 
@@ -172,7 +168,7 @@ public final class SoluturusDivision {
 	}
 
 	public static Expression divide(Integer dividend, Product divisor) {
-		return product_divide(dividend, divisor);
+		return product_divisor(dividend, divisor);
 	}
 
 	public static Expression divide(Variable dividend, Integer divisor) {
@@ -194,18 +190,52 @@ public final class SoluturusDivision {
 	}
 
 	public static Expression divide(Variable dividend, Product divisor) {
-		return product_divide(dividend, divisor);
+		return product_divisor(dividend, divisor);
+	}
+
+	public static Expression divide(Sum dividend, Integer divisor) {
+		Expression quotient = Expression.zero;
+		for (Expression e : dividend)
+			quotient = quotient.add(e.divide(divisor));
+		return quotient;
+	}
+
+	public static Expression divide(Sum dividend, Variable divisor) {
+		Expression quotient = Expression.zero;
+		for (Expression e : dividend)
+			quotient = quotient.add(e.divide(divisor));
+		return quotient;
+	}
+
+	public static Expression divide(Sum dividend, Sum divisor) {
+
+		ArrayList<Expression> divnFactors = new ArrayList<>(Arrays.asList(dividend.factor()));
+		ArrayList<Expression> divrFactors = new ArrayList<>(Arrays.asList(divisor.factor()));
+
+		divrFactors.removeIf(divnFactors::remove);
+
+		Expression newdividend = Expression.product(divnFactors.toArray(new Expression[divnFactors.size()]));
+		Expression newdivisor = Expression.product(divrFactors.toArray(new Expression[divrFactors.size()]));
+
+		if (dividend.equals(newdividend))
+			return new Product(dividend, divisor.reciprocate());
+		else
+			return newdividend.divide(newdivisor);
+	}
+
+	public static Expression divide(Sum dividend, Product divisor) {
+		return product_divisor(dividend, divisor);
 	}
 
 	public static Expression divide(Product dividend, Integer divisor) {
-		return product_divide(dividend, divisor);
+		return product_dividend(dividend, divisor);
 	}
 
 	public static Expression divide(Product dividend, Variable divisor) {
-		return product_divide(dividend, divisor);
+		return product_dividend(dividend, divisor);
 	}
 
 	public static Expression divide(Product dividend, Power divisor) {
-		return product_divide(dividend, divisor);
+		return product_dividend(dividend, divisor);
 	}
 }
