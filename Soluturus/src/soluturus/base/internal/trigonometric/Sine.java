@@ -1,5 +1,6 @@
 package soluturus.base.internal.trigonometric;
 
+import soluturus.base.Trigonometric;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Variable;
 
@@ -55,6 +56,11 @@ public record Sine(Expression angle) implements Expression {
 	public Expression sin() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Expression derive(Variable v) {
+		return angle.derive(v).multiply(Trigonometric.cos(angle));
 	}
 
 	@Override
