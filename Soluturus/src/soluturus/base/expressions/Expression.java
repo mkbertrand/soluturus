@@ -87,14 +87,38 @@ public interface Expression extends Cloneable, Serializable {
 		return Integer.of(b);
 	}
 
-	public static Expression of(char c) {
-		if (Character.isDigit(c))
-			return Integer.of((int) (c - '0'));
+	public static Variable of(char c) {
 		return new Variable(c);
 	}
 
 	public static Expression of(String s) {
 		return ExpressionParser.parse(s);
+	}
+
+	public static Expression sum(Expression... addends) {
+		if (addends.length == 0)
+			return zero;
+		else if (addends.length == 1)
+			return addends[0];
+		else {
+			Expression sum = addends[0];
+			for (int i = 1; i < addends.length; i++)
+				sum = sum.add(addends[i]);
+			return sum;
+		}
+	}
+
+	public static Expression product(Expression... factors) {
+		if (factors.length == 0)
+			return one;
+		else if (factors.length == 1)
+			return factors[0];
+		else {
+			Expression product = factors[0];
+			for (int i = 1; i < factors.length; i++)
+				product = product.multiply(factors[i]);
+			return product;
+		}
 	}
 
 	public Expression clone();
@@ -127,7 +151,7 @@ public interface Expression extends Cloneable, Serializable {
 		return product;
 	}
 
-	public Expression divide(Expression dividend);
+	public Expression divide(Expression divisor);
 
 	public Expression pow(Expression exponent);
 
@@ -147,13 +171,21 @@ public interface Expression extends Cloneable, Serializable {
 
 	public Expression sin();
 
+	public Expression derive(Variable v);
+
 	public Expression substitute(Variable v, Expression replacement);
 
-	public Expression[] factor();
+	public default Expression[] factor() {
+		return new Expression[] { this };
+	}
 
 	public boolean isKnown();
 
 	public boolean isMonomial();
 
 	public boolean isPolynomial();
+
+	public default boolean isFraction() {
+		return false;
+	}
 }
