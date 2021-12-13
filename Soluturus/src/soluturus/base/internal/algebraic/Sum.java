@@ -10,6 +10,7 @@ import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
 import soluturus.base.internal.SoluturusAddition;
+import soluturus.base.internal.SoluturusDivision;
 import soluturus.base.internal.SoluturusExponentiation;
 import soluturus.base.internal.SoluturusMultiplication;
 
@@ -58,7 +59,7 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 	public Sum clone() {
 		return new Sum(addends());
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Sum other))
@@ -95,9 +96,8 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 	}
 
 	@Override
-	public Expression divide(Expression dividend) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression divide(Expression divisor) {
+		return SoluturusDivision.divide(this, divisor);
 	}
 
 	@Override
@@ -131,6 +131,14 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 	}
 
 	@Override
+	public Expression derive(Variable v) {
+		Expression derivative = zero;
+		for (Expression e : addends)
+			derivative = derivative.add(e.derive(v));
+		return derivative;
+	}
+
+	@Override
 	public Expression substitute(Variable v, Expression replacement) {
 		Expression expr = zero;
 		for (Expression e : addends)
@@ -138,10 +146,44 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 		return expr;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Expression[] factor() {
 		// TODO Auto-generated method stub
-		return null;
+
+		ArrayList<Expression>[] addendFactors = new ArrayList[addends.length];
+
+		for (int i = 0; i < addends.length; i++)
+			addendFactors[i] = new ArrayList<Expression>(Arrays.asList(addends[i].factor()));
+		
+		ArrayList<Expression> factors = new ArrayList<>();
+		for (int i = 0; i < addendFactors[0].size(); i++) {
+			
+			boolean canRemove = true;
+			for (int j = 1; j < addendFactors.length; j++)
+				if (!addendFactors[j].contains(addendFactors[0].get(i)))
+					canRemove = false;
+			
+			if (canRemove) {
+				factors.add(addendFactors[0].get(i));
+				for (int j = 1; j < addendFactors.length; j++)
+					addendFactors[j].remove(addendFactors[0].get(i));
+				addendFactors[0].remove(addendFactors[0].get(i--));
+			}
+		}
+
+		// TODO
+		if (factors.size() == 0)
+			return new Expression[] { this };
+		else {
+			Expression sum = zero;
+			for (ArrayList<Expression> ae : addendFactors)
+				sum = sum.add(Expression.product(ae.toArray(new Expression[ae.size()])));
+
+			factors.add(sum);
+
+			return factors.toArray(new Expression[factors.size()]);
+		}
 	}
 
 	@Override
@@ -151,12 +193,12 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 				return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean isMonomial() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isPolynomial() {
 		for (Expression e : addends)
