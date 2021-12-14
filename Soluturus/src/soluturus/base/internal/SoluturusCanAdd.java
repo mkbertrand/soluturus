@@ -7,9 +7,9 @@ import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 import soluturus.base.internal.algebraic.Sum;
 
-final class SoluturusCanAdd {
+final class InternalCanAdd {
 
-	private SoluturusCanAdd() {
+	private InternalCanAdd() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -56,14 +56,14 @@ final class SoluturusCanAdd {
 	}
 
 	static boolean canAdd(Product a1, Expression a2) {
-		Expression opa1 = SoluturusMath.removeConstant(a1);
+		Expression opa1 = InternalMathUtils.removeConstant(a1);
 
 		if (!a1.equals(opa1))
 			return canAdd(opa1, a2);
 
 		if (a2 instanceof Product a2p) {
 
-			Expression opa2 = SoluturusMath.removeConstant(a2p);
+			Expression opa2 = InternalMathUtils.removeConstant(a2p);
 
 			if (a2.equals(opa2))
 				return false; // TODO
