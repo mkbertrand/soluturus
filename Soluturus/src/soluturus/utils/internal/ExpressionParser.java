@@ -54,7 +54,7 @@ public final class ExpressionParser {
 				new SimpleEntry<>("Psi", '\u03A8'), new SimpleEntry<>("psi", '\u03C8'),
 				new SimpleEntry<>("Omega", '\u03A9'), new SimpleEntry<>("omega", '\u03C9')));
 
-		functions = new HashMap<>(Map.of("sin", e -> Trigonometric.sin(e[0]), "ln", e -> e[0].ln(), "log",
+		functions = new HashMap<>(Map.of("sin", e -> Trigonometric.sin(e[0]), "ln", e -> Expression.ln(e[0]), "log",
 				e -> e[0].log(e[1]), "root", e -> e.length == 1 ? e[0].root(Expression.one_half) : e[0].root(e[1])));
 	}
 
@@ -174,8 +174,10 @@ public final class ExpressionParser {
 		// Parses numbers into Decimals
 		for (int i = 0; i < expression.size(); i++)
 			if (expression.get(i)instanceof String expri)
-				expression.set(i, parse(new BigDecimal(expri.replaceAll(",", ""))));
-
+				try {
+					expression.set(i, parse(new BigDecimal(expri.replaceAll(",", ""))));
+				} catch (NumberFormatException e) {
+				}
 		do {
 			found = false;
 
