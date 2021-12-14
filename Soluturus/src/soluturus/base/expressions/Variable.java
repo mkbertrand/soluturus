@@ -1,9 +1,9 @@
 package soluturus.base.expressions;
 
-import soluturus.base.internal.SoluturusAddition;
-import soluturus.base.internal.SoluturusDivision;
-import soluturus.base.internal.SoluturusExponentiation;
-import soluturus.base.internal.SoluturusMultiplication;
+import soluturus.base.internal.InternalAddition;
+import soluturus.base.internal.InternalDivision;
+import soluturus.base.internal.InternalExponentiation;
+import soluturus.base.internal.InternalMultiplication;
 import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 import soluturus.base.internal.trigonometric.Sine;
@@ -46,27 +46,27 @@ public final record Variable(String name) implements Expression {
 	@Override
 	public Expression add(Expression addend) {
 		if (addend instanceof Integer a2)
-			return SoluturusAddition.add(a2, this);
+			return InternalAddition.add(a2, this);
 		else
-			return SoluturusAddition.add(this, addend);
+			return InternalAddition.add(this, addend);
 	}
 
 	@Override
 	public Expression multiply(Expression multiplicand) {
 		if (multiplicand instanceof Integer mu2)
-			return SoluturusMultiplication.multiply(mu2, this);
+			return InternalMultiplication.multiply(mu2, this);
 		else
-			return SoluturusMultiplication.multiply(this, multiplicand);
+			return InternalMultiplication.multiply(this, multiplicand);
 	}
 
 	@Override
 	public Expression divide(Expression divisor) {
-		return SoluturusDivision.divide(this, divisor);
+		return InternalDivision.divide(this, divisor);
 	}
 
 	@Override
 	public Expression pow(Expression exponent) {
-		return SoluturusExponentiation.pow(this, exponent);
+		return InternalExponentiation.pow(this, exponent);
 	}
 
 	@Override
