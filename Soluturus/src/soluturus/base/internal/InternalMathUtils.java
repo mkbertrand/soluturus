@@ -5,10 +5,10 @@ import soluturus.base.expressions.Integer;
 import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 
-final class SoluturusMath {
+final class InternalMathUtils {
 
 	// Prevents instantiation
-	private SoluturusMath() {
+	private InternalMathUtils() {
 		throw new Error();
 	}
 
@@ -36,7 +36,7 @@ final class SoluturusMath {
 		if (removeIndex == -1)
 			return prod;
 		else
-			return SoluturusMath.productRemove(prod, removeIndex);
+			return InternalMathUtils.productRemove(prod, removeIndex);
 	}
 
 	static boolean canMultiply(Expression m1, Expression m2) {
