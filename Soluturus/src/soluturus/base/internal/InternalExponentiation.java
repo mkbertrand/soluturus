@@ -16,9 +16,9 @@ import soluturus.base.internal.algebraic.Sum;
 import soluturus.calculations.ExponentiationUtils;
 import soluturus.calculations.IntegerUtils;
 
-public final class SoluturusExponentiation {
+public final class InternalExponentiation {
 
-	private SoluturusExponentiation() {
+	private InternalExponentiation() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -110,7 +110,7 @@ public final class SoluturusExponentiation {
 
 		ArrayList<Expression> finexp = new ArrayList<>(Arrays.asList(exponent.factors()));
 		for (int i = 0; i < finexp.size(); i++)
-			if (SoluturusMath.canPow(base, finexp.get(i)))
+			if (InternalMathUtils.canPow(base, finexp.get(i)))
 				base = base.pow(finexp.remove(i--));
 
 		if (finexp.size() == 0)
@@ -129,6 +129,8 @@ public final class SoluturusExponentiation {
 			throw new ZeroDivisionException();
 		else if (b.equals(Expression.zero))
 			return Expression.zero;
+		else if (b.equals(Expression.one))
+			return Expression.one;
 		if (e.signum() < 0)
 			return Integer.of(ExponentiationUtils.pow(b.number(), (e.number().abs()))).reciprocate();
 		else if (e.equals(Expression.zero))
@@ -140,6 +142,8 @@ public final class SoluturusExponentiation {
 	public static Expression pow(Integer b, Variable e) {
 		if (b.equals(Expression.zero))
 			return Expression.zero;
+		else if (b.equals(Expression.one))
+			return Expression.one;
 		else
 			return new Power(b, e);
 	}
@@ -147,12 +151,19 @@ public final class SoluturusExponentiation {
 	public static Expression pow(Integer b, Sum e) {
 		if (b.equals(Expression.zero))
 			return Expression.zero;
+		else if (b.equals(Expression.one))
+			return Expression.one;
 		else
 			return sum_exponent_pow(b, e);
 	}
 
 	public static Expression pow(Integer b, Product e) {
-		return product_exponent_pow(b, e);
+		if (b.equals(Expression.zero))
+			return Expression.zero;
+		else if (b.equals(Expression.one))
+			return Expression.one;
+		else
+			return product_exponent_pow(b, e);
 	}
 
 	public static Expression pow(Integer b, Power e) {
