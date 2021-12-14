@@ -13,9 +13,9 @@ import soluturus.base.internal.algebraic.Product;
 import soluturus.base.internal.algebraic.Sum;
 import soluturus.calculations.IntegerUtils;
 
-public final class SoluturusDivision {
+public final class InternalDivision {
 
-	private SoluturusDivision() {
+	private InternalDivision() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -80,7 +80,7 @@ public final class SoluturusDivision {
 		Expression[] factors = dividend.factors();
 
 		for (int i = 0; i < factors.length; i++)
-			if (SoluturusMath.canDivide(factors[i], divisor)) {
+			if (InternalMathUtils.canDivide(factors[i], divisor)) {
 
 				Expression prod = factors[i].divide(divisor);
 
@@ -106,7 +106,7 @@ public final class SoluturusDivision {
 		Expression[] factors = divisor.factors();
 
 		for (int i = 0; i < factors.length; i++)
-			if (SoluturusMath.canDivide(dividend, factors[i])) {
+			if (InternalMathUtils.canDivide(dividend, factors[i])) {
 				Expression prod = dividend.divide(factors[i]);
 
 				if (factors.length == 2)
