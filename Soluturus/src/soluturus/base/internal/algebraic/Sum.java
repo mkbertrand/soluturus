@@ -9,10 +9,10 @@ import soluturus.base.exceptions.ExpressionContainmentException;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
-import soluturus.base.internal.SoluturusAddition;
-import soluturus.base.internal.SoluturusDivision;
-import soluturus.base.internal.SoluturusExponentiation;
-import soluturus.base.internal.SoluturusMultiplication;
+import soluturus.base.internal.InternalAddition;
+import soluturus.base.internal.InternalDivision;
+import soluturus.base.internal.InternalExponentiation;
+import soluturus.base.internal.InternalMultiplication;
 
 /**
  * Represents the sum of n addends wherein addend<sub>1</sub> *
@@ -78,31 +78,31 @@ public final record Sum(Expression[] addends) implements Expression, Iterable<Ex
 	@Override
 	public Expression add(Expression addend) {
 		if (addend instanceof Integer a2)
-			return SoluturusAddition.add(a2, this);
+			return InternalAddition.add(a2, this);
 		else if (addend instanceof Variable a2)
-			return SoluturusAddition.add(a2, this);
+			return InternalAddition.add(a2, this);
 		else
-			return SoluturusAddition.add(this, addend);
+			return InternalAddition.add(this, addend);
 	}
 
 	@Override
 	public Expression multiply(Expression multiplicand) {
 		if (multiplicand instanceof Integer mu2)
-			return SoluturusMultiplication.multiply(mu2, this);
+			return InternalMultiplication.multiply(mu2, this);
 		else if (multiplicand instanceof Variable mu2)
-			return SoluturusMultiplication.multiply(mu2, this);
+			return InternalMultiplication.multiply(mu2, this);
 		else
-			return SoluturusMultiplication.multiply(this, multiplicand);
+			return InternalMultiplication.multiply(this, multiplicand);
 	}
 
 	@Override
 	public Expression divide(Expression divisor) {
-		return SoluturusDivision.divide(this, divisor);
+		return InternalDivision.divide(this, divisor);
 	}
 
 	@Override
 	public Expression pow(Expression exponent) {
-		return SoluturusExponentiation.pow(this, exponent);
+		return InternalExponentiation.pow(this, exponent);
 	}
 
 	@Override
