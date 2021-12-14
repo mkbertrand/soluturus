@@ -4,9 +4,9 @@ import soluturus.base.exceptions.ExpressionContainmentException;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
-import soluturus.base.internal.SoluturusAddition;
-import soluturus.base.internal.SoluturusExponentiation;
-import soluturus.base.internal.SoluturusMultiplication;
+import soluturus.base.internal.InternalAddition;
+import soluturus.base.internal.InternalExponentiation;
+import soluturus.base.internal.InternalMultiplication;
 
 /**
  * Represents a base raised to a power wherein base<sup>exponent</sup> is the
@@ -37,28 +37,28 @@ public final record Power(Expression base, Expression exponent) implements Expre
 	public Expression add(Expression addend) {
 
 		if (addend instanceof Integer a2)
-			return SoluturusAddition.add(a2, this);
+			return InternalAddition.add(a2, this);
 		else if (addend instanceof Variable a2)
-			return SoluturusAddition.add(a2, this);
+			return InternalAddition.add(a2, this);
 		else if (addend instanceof Sum a2)
-			return SoluturusAddition.add(a2, this);
+			return InternalAddition.add(a2, this);
 		else if (addend instanceof Product a2)
-			return SoluturusAddition.add(a2, this);
+			return InternalAddition.add(a2, this);
 		else
-			return SoluturusAddition.add(this, addend);
+			return InternalAddition.add(this, addend);
 	}
 
 	@Override
 	public Expression multiply(Expression multiplicand) {
 		if (multiplicand instanceof Integer m2)
-			return SoluturusMultiplication.multiply(m2, this);
+			return InternalMultiplication.multiply(m2, this);
 		else if (multiplicand instanceof Variable m2)
-			return SoluturusMultiplication.multiply(m2, this);
+			return InternalMultiplication.multiply(m2, this);
 		else if (multiplicand instanceof Sum m2)
-			return SoluturusMultiplication.multiply(m2, this);
+			return InternalMultiplication.multiply(m2, this);
 		else if (multiplicand instanceof Product m2)
-			return SoluturusMultiplication.multiply(m2, this);
-		return SoluturusMultiplication.multiply(this, multiplicand);
+			return InternalMultiplication.multiply(m2, this);
+		return InternalMultiplication.multiply(this, multiplicand);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public final record Power(Expression base, Expression exponent) implements Expre
 
 	@Override
 	public Expression pow(Expression exponent) {
-		return SoluturusExponentiation.pow(this, exponent);
+		return InternalExponentiation.pow(this, exponent);
 	}
 
 	@Override
@@ -108,10 +108,10 @@ public final record Power(Expression base, Expression exponent) implements Expre
 		if (exponent.derive(v).equals(zero))
 			return exponent.multiply(base.pow(exponent.subtract(one)), base.derive(v));
 		else if (base.derive(v).equals(zero))
-			return multiply(base.ln(), exponent.derive(v));
+			return multiply(Expression.ln(base), exponent.derive(v));
 		else
-			return multiply(
-					exponent.derive(v).multiply(base.ln()).add(exponent.multiply(base, base.derive(v).reciprocate())));
+			return multiply(exponent.derive(v).multiply(Expression.ln(base))
+					.add(exponent.multiply(base, base.derive(v).reciprocate())));
 	}
 
 	@Override
