@@ -6,14 +6,15 @@ import java.util.ArrayList;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
+import soluturus.base.internal.algebraic.Logarithm;
 import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 import soluturus.base.internal.algebraic.Sum;
 import soluturus.calculations.IntegerUtils;
 
-public final class SoluturusMultiplication {
+public final class InternalMultiplication {
 
-	private SoluturusMultiplication() {
+	private InternalMultiplication() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -28,6 +29,8 @@ public final class SoluturusMultiplication {
 			return multiply(m1, mu2);
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
+		else if (m2 instanceof Logarithm mu2)
+			return mu2.add(m1);
 		return null;
 	}
 
@@ -41,6 +44,8 @@ public final class SoluturusMultiplication {
 			return multiply(m1, mu2);
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
+		else if (m2 instanceof Logarithm mu2)
+			return mu2.add(m1);
 		return null;
 	}
 
@@ -52,6 +57,8 @@ public final class SoluturusMultiplication {
 			return multiply(m1, mu2);
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
+		else if (m2 instanceof Logarithm mu2)
+			return mu2.add(m1);
 		return null;
 	}
 
@@ -61,6 +68,8 @@ public final class SoluturusMultiplication {
 			return multiply(m1, mu2);
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
+		else if (m2 instanceof Logarithm mu2)
+			return mu2.add(m1);
 		return null;
 	}
 
@@ -68,6 +77,8 @@ public final class SoluturusMultiplication {
 	public static Expression multiply(Power m1, Expression m2) {
 		if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
+		else if (m2 instanceof Logarithm mu2)
+			return mu2.add(m1);
 		return null;
 	}
 
@@ -84,11 +95,8 @@ public final class SoluturusMultiplication {
 		Expression[] factors = m1.factors();
 
 		for (int i = 0; i < factors.length; i++)
-			if (SoluturusMath.canMultiply(factors[i], m2)) {
-
-				Expression prod = factors[i].multiply(m2);
-				return SoluturusMath.productRemove(m1, i).multiply(prod);
-			}
+			if (InternalMathUtils.canMultiply(factors[i], m2))
+				return InternalMathUtils.productRemove(m1, i).multiply(factors[i].multiply(m2));
 
 		Expression[] result = new Expression[factors.length + 1];
 		System.arraycopy(factors, 0, result, 0, factors.length);
@@ -118,7 +126,6 @@ public final class SoluturusMultiplication {
 	}
 
 	public static Expression multiply(Integer m1, Product m2) {
-		// TODO
 		return product_multiply(m2, m1);
 	}
 
@@ -129,7 +136,7 @@ public final class SoluturusMultiplication {
 			return m2;
 		else if (m2.exponent().equals(Expression.negative_one))
 			return m1.divide(m2.base());
-		else if (m2.base().equals(m1) && SoluturusCanAdd.canAdd(Expression.one, m2.exponent()))
+		else if (m2.base().equals(m1) && InternalCanAdd.canAdd(Expression.one, m2.exponent()))
 			return m2.base().pow(m2.exponent().add(Expression.one));
 		else if (m2.base()instanceof Integer base2) {
 
@@ -146,7 +153,7 @@ public final class SoluturusMultiplication {
 				pow++;
 			}
 
-			if (SoluturusCanAdd.canAdd(Integer.of(pow), m2.exponent())) {
+			if (InternalCanAdd.canAdd(Integer.of(pow), m2.exponent())) {
 				ArrayList<Expression> ret = new ArrayList<>();
 				if (!m2.exponent().add(Integer.of(pow)).equals(Expression.one)) {
 					ret.add(new Power(new Integer(gcd), m2.exponent().add(Integer.of(pow))));
@@ -179,15 +186,14 @@ public final class SoluturusMultiplication {
 	}
 
 	public static Expression multiply(Variable m1, Product m2) {
-		// TODO
 		return product_multiply(m2, m1);
 	}
 
 	public static Expression multiply(Variable m1, Power m2) {
 		// TODO check this
-		if (m2.exponent().equals(Expression.negative_one))
-			return m1.divide(m2.base());
-		else if (m2.base().equals(m1) && SoluturusCanAdd.canAdd(Expression.one, m2.exponent()))
+		if (m2.exponent()instanceof Integer m2exp && m2exp.signum() < 0)
+			return m1.divide(m2.reciprocate());
+		else if (m2.base().equals(m1) && InternalCanAdd.canAdd(Expression.one, m2.exponent()))
 			return m1.pow(m2.exponent().add(Expression.one));
 		else
 			return new Product(m1, m2);
@@ -241,9 +247,9 @@ public final class SoluturusMultiplication {
 
 	public static Expression multiply(Power m1, Power m2) {
 		// TODO
-		if (m1.exponent().equals(m2.exponent()) && SoluturusMath.canMultiply(m1.base(), m2.base()))
+		if (m1.exponent().equals(m2.exponent()) && InternalMathUtils.canMultiply(m1.base(), m2.base()))
 			return m1.base().multiply(m2.base()).pow(m1.exponent());
-		else if (m1.base().equals(m2.base()) && SoluturusCanAdd.canAdd(m1.exponent(), m2.exponent()))
+		else if (m1.base().equals(m2.base()) && InternalCanAdd.canAdd(m1.exponent(), m2.exponent()))
 			return m1.base().pow(m1.exponent().add(m2.exponent()));
 		return new Product(m1, m2);
 	}
