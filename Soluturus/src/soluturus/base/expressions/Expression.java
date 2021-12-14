@@ -120,6 +120,14 @@ public interface Expression extends Cloneable, Serializable {
 			return product;
 		}
 	}
+	
+	public static Expression log(Expression base, Expression number) {
+		return number.log(base);
+	}
+	
+	public static Expression ln(Expression number) {
+		return number.log(e);
+	}
 
 	public Expression clone();
 
@@ -145,9 +153,10 @@ public interface Expression extends Cloneable, Serializable {
 
 		Expression product = this;
 
-		for (Expression e : multiplicands)
+		for (Expression e : multiplicands) {
+			System.out.println(product + " * " + e);
 			product = product.multiply(e);
-
+		}
 		return product;
 	}
 
@@ -160,10 +169,6 @@ public interface Expression extends Cloneable, Serializable {
 	}
 
 	public Expression log(Expression base);
-
-	public default Expression ln() {
-		return log(e);
-	}
 
 	public Expression negate();
 
