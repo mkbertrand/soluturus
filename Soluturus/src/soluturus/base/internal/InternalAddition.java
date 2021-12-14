@@ -7,13 +7,14 @@ import java.util.Arrays;
 import soluturus.base.expressions.Expression;
 import soluturus.base.expressions.Integer;
 import soluturus.base.expressions.Variable;
+import soluturus.base.internal.algebraic.Logarithm;
 import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 import soluturus.base.internal.algebraic.Sum;
 
-public final class SoluturusAddition {
+public final class InternalAddition {
 
-	private SoluturusAddition() {
+	private InternalAddition() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -28,6 +29,8 @@ public final class SoluturusAddition {
 			return add(a1, ad2);
 		else if (a2 instanceof Power ad2)
 			return add(a1, ad2);
+		else if (a2 instanceof Logarithm ad2)
+			return ad2.add(a1);
 		return null;
 	}
 
@@ -41,6 +44,8 @@ public final class SoluturusAddition {
 			return add(a1, ad2);
 		else if (a2 instanceof Power ad2)
 			return add(a1, ad2);
+		else if (a2 instanceof Logarithm ad2)
+			return ad2.add(a1);
 		return null;
 	}
 
@@ -52,6 +57,8 @@ public final class SoluturusAddition {
 			return add(a1, ad2);
 		else if (a2 instanceof Power ad2)
 			return add(a1, ad2);
+		else if (a2 instanceof Logarithm ad2)
+			return ad2.add(a1);
 		return null;
 	}
 
@@ -61,6 +68,8 @@ public final class SoluturusAddition {
 			return add(a1, ad2);
 		else if (a2 instanceof Power ad2)
 			return add(a1, ad2);
+		else if (a2 instanceof Logarithm ad2)
+			return ad2.add(a1);
 		return null;
 	}
 
@@ -68,13 +77,15 @@ public final class SoluturusAddition {
 	public static Expression add(Power a1, Expression a2) {
 		if (a2 instanceof Power ad2)
 			return add(a1, ad2);
+		else if (a2 instanceof Logarithm ad2)
+			return ad2.add(a1);
 		return null;
 	}
 
 	private static Expression sum_add(Sum a1, Expression a2) {
 		Expression[] a1addends = a1.addends();
 		for (int i = 0; i < a1.length(); i++)
-			if (SoluturusCanAdd.canAdd(a1addends[i], a2))
+			if (InternalCanAdd.canAdd(a1addends[i], a2))
 				if (a1addends[i].equals(a2.negate()))
 					if (a1addends.length == 2)
 						return i == 0 ? a1addends[1] : a1addends[0];
@@ -116,7 +127,7 @@ public final class SoluturusAddition {
 			Expression b = bcomps.size() == 1 ? bcomps.get(0) : new Product(bcomps);
 			Expression c = ccomps.size() == 1 ? ccomps.get(0) : new Product(ccomps);
 
-			if (SoluturusCanAdd.canAdd(a2.multiply(c.reciprocate()), b))
+			if (InternalCanAdd.canAdd(a2.multiply(c.reciprocate()), b))
 				return a2.multiply(c.reciprocate()).add(b).multiply(c);
 		}
 
@@ -247,7 +258,7 @@ public final class SoluturusAddition {
 		default -> new Product(commonFactors);
 		};
 
-		if (SoluturusCanAdd.canAdd(a, b))
+		if (InternalCanAdd.canAdd(a, b))
 			return c.multiply(a.add(b));
 		else
 			return product_add(a1, a2);
