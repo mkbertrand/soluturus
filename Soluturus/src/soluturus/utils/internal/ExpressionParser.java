@@ -55,7 +55,7 @@ public final class ExpressionParser {
 				new SimpleEntry<>("Omega", '\u03A9'), new SimpleEntry<>("omega", '\u03C9')));
 
 		functions = new HashMap<>(Map.of("sin", e -> Trigonometric.sin(e[0]), "ln", e -> Expression.ln(e[0]), "log",
-				e -> e[0].log(e[1]), "root", e -> e.length == 1 ? e[0].root(Expression.one_half) : e[0].root(e[1])));
+				e -> e[1].log(e[0]), "root", e -> e.length == 1 ? e[0].root(Expression.one_half) : e[0].root(e[1])));
 	}
 
 	private static final Expression parse(BigDecimal b) {
