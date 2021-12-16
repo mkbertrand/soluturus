@@ -120,11 +120,11 @@ public interface Expression extends Cloneable, Serializable {
 			return product;
 		}
 	}
-	
+
 	public static Expression log(Expression base, Expression number) {
 		return number.log(base);
 	}
-	
+
 	public static Expression ln(Expression number) {
 		return number.log(e);
 	}
@@ -153,10 +153,9 @@ public interface Expression extends Cloneable, Serializable {
 
 		Expression product = this;
 
-		for (Expression e : multiplicands) {
-			System.out.println(product + " * " + e);
+		for (Expression e : multiplicands)
 			product = product.multiply(e);
-		}
+
 		return product;
 	}
 
@@ -177,6 +176,14 @@ public interface Expression extends Cloneable, Serializable {
 	public Expression sin();
 
 	public Expression derive(Variable v);
+
+	public default Expression derive(char c) {
+		return derive(Expression.of(c));
+	}
+
+	public default Expression derive(String s) {
+		return derive(new Variable(s));
+	}
 
 	public Expression substitute(Variable v, Expression replacement);
 
