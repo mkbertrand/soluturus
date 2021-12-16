@@ -1,6 +1,8 @@
 package soluturus.base.expressions;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 import soluturus.base.exceptions.ZeroDivisionException;
 import soluturus.base.internal.InternalAddition;
@@ -10,6 +12,7 @@ import soluturus.base.internal.InternalMultiplication;
 import soluturus.base.internal.algebraic.Logarithm;
 import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.trigonometric.Sine;
+import soluturus.calculations.ExponentiationUtils;
 import soluturus.calculations.IntegerUtils;
 
 /**
@@ -78,6 +81,17 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	@Override
 	public Expression log(Expression base) {
 		// TODO
+		if (base instanceof Integer bint) {
+			MathContext mc = new MathContext(-ExponentiationUtils
+					.log(new BigDecimal(number), new BigDecimal(bint.number), new MathContext(1)).scale() + 3);
+			BigDecimal log = ExponentiationUtils.log(new BigDecimal(number), new BigDecimal(bint.number), mc);
+
+			if (log.toString().indexOf('.') != -1 && !(log.toString().indexOf('.') == log.toString().length() - 1
+					|| log.toString().charAt(log.toString().indexOf('.')) == '0'))
+				return new Logarithm(base, this);
+			else
+				return new Integer(log.toBigInteger());
+		}
 		return new Logarithm(base, this);
 	}
 
@@ -112,7 +126,7 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	public Integer derive(Variable v) {
 		return zero;
 	}
-	
+
 	@Override
 	public Integer substitute(Variable v, Expression replacement) {
 		return this;
@@ -149,7 +163,7 @@ public final record Integer(BigInteger number) implements Expression, Comparable
 	public boolean isFraction() {
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return number.toString();
