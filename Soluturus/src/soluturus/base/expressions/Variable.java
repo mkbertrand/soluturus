@@ -4,6 +4,7 @@ import soluturus.base.internal.InternalAddition;
 import soluturus.base.internal.InternalDivision;
 import soluturus.base.internal.InternalExponentiation;
 import soluturus.base.internal.InternalMultiplication;
+import soluturus.base.internal.algebraic.Logarithm;
 import soluturus.base.internal.algebraic.Power;
 import soluturus.base.internal.algebraic.Product;
 import soluturus.base.internal.trigonometric.Sine;
@@ -71,8 +72,11 @@ public final record Variable(String name) implements Expression {
 
 	@Override
 	public Expression log(Expression base) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO
+		if (equals(base))
+			return one;
+		else
+			return new Logarithm(base, this);
 	}
 
 	@Override
