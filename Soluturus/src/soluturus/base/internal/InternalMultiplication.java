@@ -30,7 +30,7 @@ public final class InternalMultiplication {
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
 		else if (m2 instanceof Logarithm mu2)
-			return mu2.add(m1);
+			return mu2.multiply(m1);
 		return null;
 	}
 
@@ -45,7 +45,7 @@ public final class InternalMultiplication {
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
 		else if (m2 instanceof Logarithm mu2)
-			return mu2.add(m1);
+			return mu2.multiply(m1);
 		return null;
 	}
 
@@ -58,7 +58,7 @@ public final class InternalMultiplication {
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
 		else if (m2 instanceof Logarithm mu2)
-			return mu2.add(m1);
+			return mu2.multiply(m1);
 		return null;
 	}
 
@@ -69,7 +69,7 @@ public final class InternalMultiplication {
 		else if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
 		else if (m2 instanceof Logarithm mu2)
-			return mu2.add(m1);
+			return mu2.multiply(m1);
 		return null;
 	}
 
@@ -78,7 +78,7 @@ public final class InternalMultiplication {
 		if (m2 instanceof Power mu2)
 			return multiply(m1, mu2);
 		else if (m2 instanceof Logarithm mu2)
-			return mu2.add(m1);
+			return mu2.multiply(m1);
 		return null;
 	}
 
