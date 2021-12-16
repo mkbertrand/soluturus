@@ -74,8 +74,13 @@ public final record Power(Expression base, Expression exponent) implements Expre
 
 	@Override
 	public Expression log(Expression base) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO
+		if (base.equals(this.base))
+			return exponent;
+		else if (!(Expression.log(base, this.base) instanceof Logarithm))
+			return Expression.log(base, this.base).multiply(exponent);
+		else
+			return new Logarithm(base, this);
 	}
 
 	@Override
